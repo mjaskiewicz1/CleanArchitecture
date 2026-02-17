@@ -21,7 +21,7 @@ internal class UsersControllerTests
     public class AuthUsers
     {
         private const string Login = EndpointPathMapping.Users.Login;
-        private const string Logout = EndpointPathMapping.Users.Logout;
+        private const string Revoke = EndpointPathMapping.Users.Revoke;
         private const string RefreshToken = EndpointPathMapping.Users.RefreshToken;
 
         [Test]
@@ -52,16 +52,16 @@ internal class UsersControllerTests
         [Arguments("email", "password")]
         public async Task LoginAsync_InvalidLoginData_ReturnsBadRequest(string login, string password)
         {
-            // Arrange                                                                                       
+            // Arrange
             var client = WebApplicationFactory.CreateClient();
             var request = new LoginUserCommand(login, password);
 
             var url = UsersPath.ToRelativeUri(Login);
 
-            // Act                                                                                           
+            // Act
             var response = await client.PostAsJsonAsync(url, request);
 
-            // Assert                                                                                        
+            // Assert
             await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
 
             var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
@@ -79,9 +79,8 @@ internal class UsersControllerTests
 
             var url = UsersPath.ToRelativeUri(Login);
 
-            // Act                                                                                           
+            // Act
             var response = await client.PostAsJsonAsync(url, request);
-
 
             // Assert
             await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
@@ -89,12 +88,12 @@ internal class UsersControllerTests
 
         [Test]
         [Arguments("admin@admin.com", "test")]
-        public async Task LogoutAsync_ValidRequest_ReturnsOk(string login, string password)
+        public async Task RevokeAsync_ValidRequest_ReturnsOk(string login, string password)
         {
             // Arrange
             var client = await WebApplicationFactory.CreateAuthenticatedClientAsync(login, password);
 
-            var url = UsersPath.ToRelativeUri(Logout);
+            var url = UsersPath.ToRelativeUri(Revoke);
 
             // Act
             var response = await client.DeleteAsync(url);
@@ -122,13 +121,12 @@ internal class UsersControllerTests
             var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
             await Assert.That(problemDetails).IsNotNull();
         }
+
         [Test]
         [Arguments("admin@admin.com", "test")]
-        public async Task RefreshTokenAsync_ValidToken_ReturnsOk(
-            string login,
-            string password)
+        public async Task RefreshTokenAsync_ValidToken_ReturnsOk(string login, string password)
         {
-            // Arrange 
+            // Arrange
             var client = WebApplicationFactory.CreateClient();
 
             var loginRequest = new LoginUserCommand(login, password);
@@ -159,6 +157,5 @@ internal class UsersControllerTests
             await Assert.That(refreshResult!.AccessToken).IsNotNull();
             await Assert.That(refreshResult.RefreshToken).IsNotNull();
         }
-
     }
 }
