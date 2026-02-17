@@ -56,7 +56,7 @@ public class RevokeRefreshTokensCommandHandlerTests
             .ExecuteDeleteAsync(
                 Arg.Any<Expression<Func<Domain.Entities.RefreshToken, bool>>>(),
                 CancellationToken.None);
-        
+
         // Turn the captured expression tree into a real function we can run.
         // Expression trees describe code but can't run by themselves.
         // Compile() makes a Func<RefreshToken, bool> we can call to test tokens.
@@ -64,12 +64,16 @@ public class RevokeRefreshTokensCommandHandlerTests
 
         var validToken = new Domain.Entities.RefreshToken
         {
-            Token = "hash", ExpiresAtUtc = DateTime.UtcNow, UserId = userId
+            Token = "hash",
+            ExpiresAtUtc = DateTime.UtcNow,
+            UserId = userId
         };
 
         var invalidToken = new Domain.Entities.RefreshToken
         {
-            Token = "hash", ExpiresAtUtc = DateTime.UtcNow, UserId = 999ul
+            Token = "hash",
+            ExpiresAtUtc = DateTime.UtcNow,
+            UserId = 999ul
         };
 
         await Assert.That(compiled(validToken)).IsTrue();
