@@ -1,0 +1,98 @@
+﻿name: clean-architecture-full-stack
+
+networks:
+  clean-architecture-network:
+    driver: bridge
+
+volumes:
+  clean-architecture-sql-data:
+  clean-architecture-azurite-volume:
+  otel-data:
+
+services:
+  sql-database:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    container_name: clean-architecture-sql
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Password123!"
+      MSSQL_PID: "Developer"
+    volumes:
+      - clean-architecture-sql-data:/var/opt/mssql
+    networks:
+      - clean-architecture-network
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P 'Password123!' -Q 'SELECT 1' || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  azurite-storage:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: clean-architecture-azurite
+    command: azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --location /workspace
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - clean-architecture-azurite-volume:/workspace
+    networks:
+      - clean-architecture-network
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/127.0.0.1/10000' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  otel-lgtm:
+    image: grafana/otel-lgtm:latest
+    container_name: otel-lgtm
+    ports:
+      - "3000:3000"
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - otel-data:/var/lib/grafana
+    networks:
+      - clean-architecture-network
+    restart: unless-stopped
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: clean-architecture-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - clean-architecture-network
+    restart: unless-stopped
+
+  api:
+    container_name: clean-architecture-api
+    build:
+      context: .
+      dockerfile: src/Web.Api/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__SqlConnection: "Server=sql-database,1433;Database=CleanArchitecture;User Id=sa;Password=Password123!;TrustServerCertificate=true;Encrypt=true"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-lgtm:4317
+      OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+      OTEL_SERVICE_NAME: clean-architecture-api
+      OTEL_RESOURCE_ATTRIBUTES: service.namespace=clean-architecture,deployment.environment=Development
+      AzureStorage__ConnectionString: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite-storage:10000/devstoreaccount1;QueueEndpoint=http://azurite-storage:10001/devstoreaccount1;TableEndpoint=http://azurite-storage:10002/devstoreaccount1;
+    depends_on:
+      sql-database:
+        condition: service_healthy
+      azurite-storage:
+        condition: service_healthy
+      otel-lgtm:
+        condition: service_started
+    networks:
+      - clean-architecture-network
+    restart: unless-stopped

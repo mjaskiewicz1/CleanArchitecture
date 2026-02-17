@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+    <PropertyGroup>
+        <NoWarn>CA1822</NoWarn>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="NSubstitute" />
+        <PackageReference Include="TUnit" />
+        <PackageReference Include="TUnit.Assertions" />
+        <PackageReference Include="TUnit.Core" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Application\Application.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Extenstions\" />
+    </ItemGroup>
+</Project>

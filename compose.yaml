@@ -1,0 +1,7 @@
+﻿services:
+  garantio.api:
+    image: garantio.api
+    build:
+      context: .
+      dockerfile: Garantio.API/Dockerfile
+
