@@ -5,6 +5,7 @@ using Application.Users.Commands.Login;
 using Application.Users.Commands.RefreshToken;
 using Application.Users.Commands.Revoke;
 using Application.Users.Dtos;
+using Application.Users.Queries;
 
 using MediatR;
 
@@ -33,8 +34,8 @@ public class UsersController(IMediator mediator) : ControllerBase
         return result.ToActionResult();
     }
 
-    [EndpointDescription("Revokes all active refresh tokens for the authenticated user.")]
     [HttpDelete(EndpointPathMapping.Users.Revoke)]
+    [EndpointDescription("Revokes all active refresh tokens for the authenticated user.")]
     [ProducesResponseType<ProblemDetails>(statusCode: StatusCodes.Status401Unauthorized)]
     [ProducesResponseType<ProblemDetails>(statusCode: StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -45,8 +46,8 @@ public class UsersController(IMediator mediator) : ControllerBase
         return result.ToActionResult();
     }
 
-    [AllowAnonymous]
     [HttpPost(EndpointPathMapping.Users.RefreshToken)]
+    [AllowAnonymous]
     [ProducesResponseType<ProblemDetails>(statusCode: StatusCodes.Status401Unauthorized)]
     [ProducesResponseType<ProblemDetails>(statusCode: StatusCodes.Status403Forbidden)]
     [ProducesResponseType<RefreshTokenResponse>(statusCode: StatusCodes.Status200OK)]
@@ -56,4 +57,16 @@ public class UsersController(IMediator mediator) : ControllerBase
 
         return result.ToActionResult();
     }
+    [HttpGet(EndpointPathMapping.Users.Me)]
+    [EndpointDescription("Retrieves the user details for the authenticated user.")]
+    [ProducesResponseType<UserResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Me()
+    {
+        var result = await mediator.Send(new GetCurrentUserQuery());
+
+        return result.ToActionResult();
+    }
+
 }

@@ -11,5 +11,6 @@ public static class EndpointPathMapping
         public const string Login = "login";
         public const string RefreshToken = "refresh-token";
         public const string Revoke = "logout";
+        public const string Me = "me";
     }
 }
