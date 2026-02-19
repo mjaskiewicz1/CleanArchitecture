@@ -23,6 +23,7 @@ internal class UsersControllerTests
         private const string Login = EndpointPathMapping.Users.Login;
         private const string Revoke = EndpointPathMapping.Users.Revoke;
         private const string RefreshToken = EndpointPathMapping.Users.RefreshToken;
+        private const string Me = EndpointPathMapping.Users.Me;
 
         [Test]
         [Arguments("fake@fake.pl", "fake")]
@@ -156,6 +157,39 @@ internal class UsersControllerTests
             await Assert.That(refreshResult).IsNotNull();
             await Assert.That(refreshResult!.AccessToken).IsNotNull();
             await Assert.That(refreshResult.RefreshToken).IsNotNull();
+        }
+
+        [Test]
+        [Arguments("admin@admin.com", "test")]
+        public async Task GetProfileAsync_AuthenticatedRequest_ReturnsOk(string login, string password)
+        {
+            // Arrange
+
+            var client = await WebApplicationFactory.CreateAuthenticatedClientAsync(login, password);
+            var meUrl = UsersPath.ToRelativeUri(Me);
+            // Act
+            var response = await client.GetAsync(meUrl);
+            // Assert
+            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+            var result = await response.Content.ReadFromJsonAsync<UserProfileResponse>();
+            await Assert.That(result).IsNotNull();
+            await Assert.That(result!.Email).IsEqualTo(login);
+            await Assert.That(result.Permissions).IsNotNull();
+
+        }
+
+        [Test]
+        public async Task GetProfileAsync_WithoutAuthentication_ReturnsUnauthorized()
+        {
+            // Arrange
+            var client = WebApplicationFactory.CreateClient();
+            var meUrl = UsersPath.ToRelativeUri(Me);
+
+            // Act
+            var response = await client.GetAsync(meUrl);
+
+            // Assert
+            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
         }
     }
 }

@@ -89,13 +89,14 @@ public class Repository<TEntity>(ApplicationDbContext dbContext) : IRepository<T
     {
         IQueryable<TEntity> query = BaseQuery(asNoTracking);
 
-        if (include is not null)
-            query = include(query);
-
         query = query.Where(x => x.Id == id);
 
         if (filter is not null)
             query = query.Where(filter);
+
+        if (include is not null)
+            query = include(query);
+
         if (selector is not null)
             query = query.Select(selector);
 

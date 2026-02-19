@@ -17,7 +17,7 @@ public class LoginUserCommandHandler(
 {
     public async Task<Result<LoginResponse>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await unitOfWork.UserRepository.GetAsync(filter: x => x.Email == request.Email,
+        var user = await unitOfWork.UserRepository.GetAsync(asNoTracking: false, filter: x => x.Email == request.Email,
             include: x =>
                 x.Include(u => u.UserPermissions)
                     .ThenInclude(up => up.Permission),
