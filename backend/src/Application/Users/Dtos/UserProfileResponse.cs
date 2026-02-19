@@ -22,7 +22,8 @@ public sealed record UserProfileResponse : BaseResponse, IResponse<User, UserPro
             LastName = entity.LastName,
             Email = entity.Email,
             LastLogin = entity.LastLogin,
-            Permissions = entity.UserPermissions.Select(UserPermissionResponse.FromEntity)
+            Permissions = entity.UserPermissions.Select(UserPermissionResponse.FromEntity),
+            CreatedAtUtc = entity.CreatedAtUtc
         };
     }
 }

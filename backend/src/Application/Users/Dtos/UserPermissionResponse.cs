@@ -12,6 +12,9 @@ public sealed record UserPermissionResponse
 
     public static UserPermissionResponse FromEntity(UserPermission entity)
     {
-        return new UserPermissionResponse { Id = entity.Permission.Id, Name = entity.Permission.Name };
+        return new UserPermissionResponse
+        {
+            Id = entity.Permission.Id, Name = entity.Permission.Name, CreatedAtUtc = entity.CreatedAtUtc
+        };
     }
 }
