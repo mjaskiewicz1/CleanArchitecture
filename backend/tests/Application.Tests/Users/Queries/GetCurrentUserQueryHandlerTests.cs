@@ -90,7 +90,6 @@ public sealed class GetCurrentUserQueryHandlerTests()
         await Assert.That(result.Value.FirstName).IsEqualTo(user.FirstName);
         await Assert.That(result.Value.LastName).IsEqualTo(user.LastName);
         await Assert.That(result.Value.Email).IsEqualTo(user.Email);
-        await Assert.That(result.Value.Permissions.Count)
-            .IsEqualTo(user.UserPermissions.Count);
+        await Assert.That(result.Value.Permissions.Count).IsEqualTo(user.UserPermissions.Count);
     }
 }
