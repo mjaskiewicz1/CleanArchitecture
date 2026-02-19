@@ -59,7 +59,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     }
     [HttpGet(EndpointPathMapping.Users.Me)]
     [EndpointDescription("Retrieves the user details for the authenticated user.")]
-    [ProducesResponseType<UserResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<UserProfileResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Me()

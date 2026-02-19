@@ -6,5 +6,4 @@ using MediatR;
 
 namespace Application.Users.Queries;
 
-public sealed record GetCurrentUserQuery()
-    : IRequest<Result<UserResponse>>;
+public sealed record GetCurrentUserQuery : IRequest<Result<UserProfileResponse>>;

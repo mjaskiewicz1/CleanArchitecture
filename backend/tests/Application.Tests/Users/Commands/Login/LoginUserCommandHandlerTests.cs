@@ -13,7 +13,6 @@ namespace Application.Tests.Users.Commands.Login;
 
 public class LoginUserCommandHandlerTests
 {
-
     private IUserRepository _userRepository = null!;
     private IRefreshTokenRepository _refreshTokenRepository = null!;
     private IPasswordHasher _passwordHasher = null!;
@@ -43,14 +42,12 @@ public class LoginUserCommandHandlerTests
 
         var user = new User
         {
-            Email = command.Email,
-            PasswordHash = "stored-password-hash",
-            FirstName = "Name",
-            LastName = "Surname",
+            Email = command.Email, PasswordHash = "stored-password-hash", FirstName = "Name", LastName = "Surname",
         };
 
         _userRepository.GetAsync(filter: Arg.Any<Expression<Func<User, bool>>>(),
                 include: Arg.Any<Func<IQueryable<User>, IQueryable<User>>>(),
+                asNoTracking: false,
                 cancellationToken: CancellationToken.None)
             .Returns(user);
 
@@ -78,8 +75,9 @@ public class LoginUserCommandHandlerTests
         var command = new LoginUserCommand("test@test.com", "Password123");
 
         _userRepository.GetAsync(filter: Arg.Any<Expression<Func<User, bool>>>(),
-                include: Arg.Any<Func<IQueryable<User>, IQueryable<User>>>(),
-                cancellationToken: CancellationToken.None).Returns((User)null!);
+            include: Arg.Any<Func<IQueryable<User>, IQueryable<User>>>(),
+            asNoTracking: false,
+            cancellationToken: CancellationToken.None).Returns((User)null!);
 
         var result = await _handler.Handle(command, CancellationToken.None);
 
