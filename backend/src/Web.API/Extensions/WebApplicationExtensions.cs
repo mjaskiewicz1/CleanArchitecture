@@ -14,13 +14,12 @@ public static class WebApplicationExtensions
             {
                 app.MapScalar();
             }
+
+            app.UseExceptionHandler();
+            app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
-
-
-            app.UseHttpsRedirection();
             app.MapControllers();
-            app.UseExceptionHandler();
         }
 
         private void MapScalar()
