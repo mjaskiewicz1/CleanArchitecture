@@ -10,7 +10,7 @@ public sealed record UserResponse : BaseResponse, IResponse<User, UserResponse>
     public required string LastName { get; init; }
     public required string Email { get; init; }
     public DateTimeOffset? LastLogin { get; init; }
-    
+
     public IEnumerable<UserPermissionResponse> Permissions { get; init; } = [];
 
     public static UserResponse FromEntity(User entity)
