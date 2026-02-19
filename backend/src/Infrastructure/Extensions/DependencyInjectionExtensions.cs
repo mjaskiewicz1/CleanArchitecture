@@ -4,13 +4,11 @@ using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 
 using Domain.Entities.Enums;
-using Domain.Repositories;
 
 using Infrastructure.Authentication;
 using Infrastructure.Authorization;
 using Infrastructure.Constants;
 using Infrastructure.Database;
-using Infrastructure.Repositories;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +27,7 @@ public static class DependencyInjectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddInfrastructure(IConfiguration configuration, bool development)
+        public void AddInfrastructure(IConfiguration configuration, bool development)
         {
             var sqlConnectionString =
                 configuration.GetConnectionString("SqlConnection") ??
@@ -45,7 +43,6 @@ public static class DependencyInjectionExtensions
             services.AddAuthenticationInternal(configuration);
             services.AddAuthorizationInternal();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            return services;
         }
 
         private void AddDatabase(string sqlConnectionString, bool development)
