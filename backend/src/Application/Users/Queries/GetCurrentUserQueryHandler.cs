@@ -19,9 +19,9 @@ public sealed class GetCurrentUserQueryHandler(
         GetCurrentUserQuery request,
         CancellationToken cancellationToken)
     {
-        var user = await unitOfWork.UserRepository.GetAsync(asNoTracking: true, filter: x => x.Id == userContext.UserId, include: x => x
+        var user = await unitOfWork.UserRepository.GetByIdAsync(id: userContext.UserId, include: x => x
             .Include(u => u.UserPermissions)
-            .ThenInclude(up => up.Permission), cancellationToken: cancellationToken);
+            .ThenInclude(up => up.Permission), asNoTracking: true, cancellationToken: cancellationToken);
         return user is null ? Result<UserResponse>.Failure(Error.NotFound("User not found")) : Result.Success(UserResponse.FromEntity(user));
     }
 }
