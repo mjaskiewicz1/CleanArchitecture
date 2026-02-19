@@ -61,13 +61,12 @@ public sealed class GetCurrentUserQueryHandlerTests
     {
         // Arrange
         var query = new GetCurrentUserQuery();
-
-        _userContext.UserId.Returns(123ul);
-
         var user = CreateUser();
 
+        _userContext.UserId.Returns(user.Id);
+
         _userRepository.GetByIdAsync(
-                id: _userContext.UserId,
+                id: user.Id,
                 filter: Arg.Any<Expression<Func<User, bool>>>(),
                 include: Arg.Any<Func<IQueryable<User>, IQueryable<User>>>(),
                 selector: Arg.Any<Expression<Func<User, User>>>(),
@@ -80,11 +79,35 @@ public sealed class GetCurrentUserQueryHandlerTests
 
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
-
         await Assert.That(result.Value.Id).IsEqualTo(user.Id);
         await Assert.That(result.Value.FirstName).IsEqualTo(user.FirstName);
         await Assert.That(result.Value.LastName).IsEqualTo(user.LastName);
         await Assert.That(result.Value.Email).IsEqualTo(user.Email);
         await Assert.That(result.Value.Permissions.Count).IsEqualTo(user.UserPermissions.Count);
+    }
+
+    [Test]
+    public async Task Handle_UserNotFound_ReturnsFailure()
+    {
+        // Arrange
+        var query = new GetCurrentUserQuery();
+
+        _userContext.UserId.Returns(999ul);
+
+        _userRepository.GetByIdAsync(
+                id: Arg.Any<ulong>(),
+                filter: Arg.Any<Expression<Func<User, bool>>>(),
+                include: Arg.Any<Func<IQueryable<User>, IQueryable<User>>>(),
+                selector: Arg.Any<Expression<Func<User, User>>>(),
+                asNoTracking: Arg.Any<bool>(),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs((User?)null);
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        await Assert.That(result.IsSuccess).IsFalse();
+     
     }
 }
