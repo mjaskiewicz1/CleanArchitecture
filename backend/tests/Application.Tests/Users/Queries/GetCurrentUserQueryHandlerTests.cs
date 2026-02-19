@@ -34,8 +34,8 @@ public sealed class GetCurrentUserQueryHandlerTests
             LastLogin = DateTimeOffset.UtcNow,
             UserPermissions =
             [
-                new() { UserId = userId, PermissionId = permission1.Id, Permission = permission1 },
-                new() { UserId = userId, PermissionId = permission2.Id, Permission = permission2 }
+                new UserPermission { UserId = userId, PermissionId = permission1.Id, Permission = permission1 },
+                new UserPermission { UserId = userId, PermissionId = permission2.Id, Permission = permission2 }
             ]
         };
 
