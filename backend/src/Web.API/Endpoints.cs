@@ -10,6 +10,6 @@ public static class EndpointPathMapping
         public const string Base = ApiPath + "/user";
         public const string Login = "login";
         public const string RefreshToken = "refresh-token";
-        public const string Logout = "logout";
+        public const string Revoke = "logout";
     }
 }

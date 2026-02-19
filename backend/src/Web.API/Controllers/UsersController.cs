@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 using Application.Abstractions.Authentication;
 using Application.Users.Commands.Login;
-using Application.Users.Commands.Logout;
 using Application.Users.Commands.RefreshToken;
+using Application.Users.Commands.Revoke;
 using Application.Users.Dtos;
 
 using MediatR;
@@ -19,7 +19,7 @@ namespace Web.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route(EndpointPathMapping.Users.Base)]
-public class UsersController(IMediator mediator, IUserContext userContext) : ControllerBase
+public class UsersController(IMediator mediator) : ControllerBase
 {
     [HttpPost(EndpointPathMapping.Users.Login)]
     [AllowAnonymous]
@@ -34,15 +34,13 @@ public class UsersController(IMediator mediator, IUserContext userContext) : Con
     }
 
     [EndpointDescription("Revokes all active refresh tokens for the authenticated user.")]
-    [HttpDelete(EndpointPathMapping.Users.Logout)]
+    [HttpDelete(EndpointPathMapping.Users.Revoke)]
     [ProducesResponseType<ProblemDetails>(statusCode: StatusCodes.Status401Unauthorized)]
     [ProducesResponseType<ProblemDetails>(statusCode: StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> LogoutAsync()
+    public async Task<IActionResult> RevokeAsync()
     {
-        var command = new LogoutCommand(userContext.UserId);
-
-        var result = await mediator.Send(command);
+        var result = await mediator.Send(new RevokeRefreshTokensCommand());
 
         return result.ToActionResult();
     }
