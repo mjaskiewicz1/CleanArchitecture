@@ -2,19 +2,11 @@ using System.Linq.Expressions;
 
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
-using Application.Users.Commands.Login;
-using Application.Users.Dtos;
 using Application.Users.Queries;
 
 using Domain.Entities;
 using Domain.Entities.Enums;
 using Domain.Repositories;
-using Domain.Shared;
-
-using MediatR;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 
 using NSubstitute;
 
