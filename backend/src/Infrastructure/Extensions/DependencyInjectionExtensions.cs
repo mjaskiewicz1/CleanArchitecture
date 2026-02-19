@@ -13,6 +13,8 @@ using Infrastructure.Database;
 using Infrastructure.Repositories;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Azure;
@@ -91,15 +93,18 @@ public static class DependencyInjectionExtensions
 
         private void AddAuthenticationInternal(IConfiguration configuration)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(o =>
                 {
-                    o.RequireHttpsMetadata = true;
                     o.SaveToken = false;
+
                     o.TokenValidationParameters = new TokenValidationParameters
                     {
                         IssuerSigningKey =
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!)),
+                            new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!)
+                            ),
                         ValidIssuer = configuration["Jwt:Issuer"],
                         ValidAudience = configuration["Jwt:Audience"],
                         ValidateIssuer = true,
@@ -107,6 +112,42 @@ public static class DependencyInjectionExtensions
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero
+                    };
+
+                    o.Events = new JwtBearerEvents
+                    {
+                        OnChallenge = async context =>
+                        {
+                            context.HandleResponse();
+
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/problem+json";
+
+                            var problem = new ProblemDetails
+                            {
+                                Title = "Unauthorized",
+                                Status = StatusCodes.Status401Unauthorized,
+                                Detail = context.ErrorDescription ?? "Invalid or expired token",
+                                Type = "https://tools.ietf.org/html/rfc7235#section-3.1"
+                            };
+
+                            await context.Response.WriteAsJsonAsync(problem);
+                        },
+                        OnForbidden = async context =>
+                        {
+                            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            context.Response.ContentType = "application/problem+json";
+
+                            var problem = new ProblemDetails
+                            {
+                                Title = "Forbidden",
+                                Status = StatusCodes.Status403Forbidden,
+                                Detail = "You do not have permission to access this resource",
+                                Type = "https://tools.ietf.org/html/rfc7235#section-3.3"
+                            };
+
+                            await context.Response.WriteAsJsonAsync(problem);
+                        }
                     };
                 });
 
