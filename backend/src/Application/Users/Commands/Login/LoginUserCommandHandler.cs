@@ -34,7 +34,9 @@ public class LoginUserCommandHandler(
 
         var refreshTokenEntity = new Domain.Entities.RefreshToken
         {
-            Token = refreshTokenHash, ExpiresAtUtc = expiresAt, UserId = user.Id,
+            Token = refreshTokenHash,
+            ExpiresAtUtc = expiresAt,
+            UserId = user.Id,
         };
         user.LastLogin = DateTimeOffset.UtcNow;
         await unitOfWork.RefreshTokenRepository.AddAsync(refreshTokenEntity, cancellationToken);

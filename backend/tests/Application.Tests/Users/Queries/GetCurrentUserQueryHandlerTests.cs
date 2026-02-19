@@ -32,11 +32,11 @@ public sealed class GetCurrentUserQueryHandlerTests
             LastName = "User",
             Email = "admin@admin.com",
             LastLogin = DateTimeOffset.UtcNow,
-            UserPermissions = new List<UserPermission>
-            {
+            UserPermissions =
+            [
                 new() { UserId = userId, PermissionId = permission1.Id, Permission = permission1 },
                 new() { UserId = userId, PermissionId = permission2.Id, Permission = permission2 }
-            }
+            ]
         };
 
 
@@ -108,6 +108,6 @@ public sealed class GetCurrentUserQueryHandlerTests
 
         // Assert
         await Assert.That(result.IsSuccess).IsFalse();
-     
+
     }
 }

@@ -164,7 +164,7 @@ internal class UsersControllerTests
         public async Task GetProfileAsync_AuthenticatedRequest_ReturnsOk(string login, string password)
         {
             // Arrange
-            
+
             var client = await WebApplicationFactory.CreateAuthenticatedClientAsync(login, password);
             var meUrl = UsersPath.ToRelativeUri(Me);
             // Act
