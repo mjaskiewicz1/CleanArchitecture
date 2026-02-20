@@ -130,10 +130,11 @@ public static class DependencyInjectionExtensions
                                 Detail = context.ErrorDescription ?? "Invalid or expired token",
                                 Type = "https://tools.ietf.org/html/rfc7235#section-3.1",
                                 Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}",
-                                Extensions = {
-
+                                Extensions =
+                                {
                                     ["traceId"] = httpContext.TraceIdentifier,
-                                    ["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity.Id }
+                                    ["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity.Id
+                                }
                             };
 
                             await httpContext.Response.WriteAsJsonAsync(problem);
@@ -155,8 +156,7 @@ public static class DependencyInjectionExtensions
                                 Extensions =
                                 {
                                     ["traceId"] = httpContext.TraceIdentifier,
-                                    ["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity
-                                        .Id
+                                    ["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity.Id
                                 }
                             };
 
