@@ -14,7 +14,9 @@ public sealed record UserPermissionResponse
     {
         return new UserPermissionResponse
         {
-            Id = entity.Permission.Id, Name = entity.Permission.Name, CreatedAtUtc = entity.CreatedAtUtc
+            Id = entity.Permission.Id,
+            Name = entity.Permission.Name,
+            CreatedAtUtc = entity.CreatedAtUtc
         };
     }
 }
