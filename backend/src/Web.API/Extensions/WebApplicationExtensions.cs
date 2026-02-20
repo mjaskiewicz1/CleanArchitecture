@@ -10,17 +10,17 @@ public static class WebApplicationExtensions
     {
         public void MapPresentation(bool development)
         {
+            ResultExtensions.Init(app.Services.GetRequiredService<IHttpContextAccessor>());
             if (development)
             {
                 app.MapScalar();
             }
+
+            app.UseExceptionHandler();
+            app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
-
-
-            app.UseHttpsRedirection();
             app.MapControllers();
-            app.UseExceptionHandler();
         }
 
         private void MapScalar()

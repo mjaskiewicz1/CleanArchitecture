@@ -4,15 +4,16 @@ using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 
 using Domain.Entities.Enums;
-using Domain.Repositories;
 
 using Infrastructure.Authentication;
 using Infrastructure.Authorization;
 using Infrastructure.Constants;
 using Infrastructure.Database;
-using Infrastructure.Repositories;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Azure;
@@ -27,7 +28,7 @@ public static class DependencyInjectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddInfrastructure(IConfiguration configuration, bool development)
+        public void AddInfrastructure(IConfiguration configuration, bool development)
         {
             var sqlConnectionString =
                 configuration.GetConnectionString("SqlConnection") ??
@@ -43,7 +44,6 @@ public static class DependencyInjectionExtensions
             services.AddAuthenticationInternal(configuration);
             services.AddAuthorizationInternal();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            return services;
         }
 
         private void AddDatabase(string sqlConnectionString, bool development)
@@ -91,15 +91,18 @@ public static class DependencyInjectionExtensions
 
         private void AddAuthenticationInternal(IConfiguration configuration)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddHttpContextAccessor();
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(o =>
                 {
-                    o.RequireHttpsMetadata = true;
                     o.SaveToken = false;
+
                     o.TokenValidationParameters = new TokenValidationParameters
                     {
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!)),
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!)
+                        ),
                         ValidIssuer = configuration["Jwt:Issuer"],
                         ValidAudience = configuration["Jwt:Audience"],
                         ValidateIssuer = true,
@@ -108,10 +111,60 @@ public static class DependencyInjectionExtensions
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero
                     };
+
+                    o.Events = new JwtBearerEvents
+                    {
+                        OnChallenge = async context =>
+                        {
+                            context.HandleResponse();
+
+                            var httpContext = context.HttpContext;
+
+                            httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            httpContext.Response.ContentType = "application/problem+json";
+
+                            var problem = new ProblemDetails
+                            {
+                                Title = "Unauthorized",
+                                Status = StatusCodes.Status401Unauthorized,
+                                Detail = context.ErrorDescription ?? "Invalid or expired token",
+                                Type = "https://tools.ietf.org/html/rfc7235#section-3.1",
+                                Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}",
+                                Extensions = {
+
+                                    ["traceId"] = httpContext.TraceIdentifier,
+                                    ["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity.Id }
+                            };
+
+                            await httpContext.Response.WriteAsJsonAsync(problem);
+                        },
+                        OnForbidden = async context =>
+                        {
+                            var httpContext = context.HttpContext;
+
+                            httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            httpContext.Response.ContentType = "application/problem+json";
+
+                            var problem = new ProblemDetails
+                            {
+                                Title = "Forbidden",
+                                Status = StatusCodes.Status403Forbidden,
+                                Detail = "You do not have permission to access this resource",
+                                Type = "https://tools.ietf.org/html/rfc7235#section-3.3",
+                                Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}",
+                                Extensions =
+                                {
+                                    ["traceId"] = httpContext.TraceIdentifier,
+                                    ["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity
+                                        .Id
+                                }
+                            };
+
+                            await httpContext.Response.WriteAsJsonAsync(problem);
+                        }
+                    };
                 });
 
-
-            services.AddHttpContextAccessor();
             services.AddScoped<IUserContext, UserContext>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddSingleton<ITokenProvider, TokenProvider>();
