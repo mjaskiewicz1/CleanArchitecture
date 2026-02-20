@@ -10,6 +10,7 @@ public static class WebApplicationExtensions
     {
         public void MapPresentation(bool development)
         {
+            ResultExtensions.Init(app.Services.GetRequiredService<IHttpContextAccessor>());
             if (development)
             {
                 app.MapScalar();

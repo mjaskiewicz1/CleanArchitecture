@@ -2,13 +2,17 @@ using System.Net;
 
 using Domain.Shared;
 
-
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Api.Extensions;
 
 internal static class ResultExtensions
 {
+    private static IHttpContextAccessor? s_accessor;
+
+    public static void Init(IHttpContextAccessor accessor) => s_accessor = accessor;
+
     extension(Result result)
     {
         public IActionResult ToActionResult()
@@ -23,6 +27,7 @@ internal static class ResultExtensions
             => result.IsSuccess
                 ? new OkObjectResult(result.Value)
                 : result.Error.ToProblemDetails();
+
         public IActionResult ToCreatedAtRouteResult(string routeName, ulong routeValues)
             => result.IsSuccess
                 ? new CreatedAtRouteResult(routeName, routeValues, result.Value)
@@ -33,6 +38,7 @@ internal static class ResultExtensions
     {
         private ObjectResult ToProblemDetails()
         {
+            var httpContext = s_accessor?.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
             var statusCode = (int)error.StatusCode;
 
             var problemDetails = new ProblemDetails
@@ -40,18 +46,18 @@ internal static class ResultExtensions
                 Title = GetTitle(error.StatusCode),
                 Detail = error.Message,
                 Status = statusCode,
-                Type = GetTypeUrl(error.StatusCode)
+                Type = GetTypeUrl(error.StatusCode),
+                Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
             };
 
             if (error.ValidationErrors?.Count > 0)
             {
                 problemDetails.Extensions["errors"] = error.ValidationErrors;
             }
+            problemDetails.Extensions["traceId"] = httpContext.TraceIdentifier;
+            problemDetails.Extensions["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity.Id;
 
-            return new ObjectResult(problemDetails)
-            {
-                StatusCode = statusCode
-            };
+            return new ObjectResult(problemDetails) { StatusCode = statusCode };
         }
     }
 
