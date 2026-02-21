@@ -3,6 +3,7 @@ using System.Net;
 using JetBrains.Annotations;
 
 namespace Domain.Shared;
+
 [UsedImplicitly(ImplicitUseTargetFlags.Members)]
 public sealed record Error(
     string Message,

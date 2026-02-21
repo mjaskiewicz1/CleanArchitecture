@@ -60,7 +60,8 @@ public class UserSeeder : EntitySeeder<User>
         var adminUser = users[0];
         var adminPermissions = permissions.ConvertAll(p => new UserPermission
         {
-            UserId = adminUser.Id, PermissionId = p.Id
+            UserId = adminUser.Id,
+            PermissionId = p.Id
         });
 
         await context.UserPermissions.AddRangeAsync(adminPermissions);
