@@ -45,7 +45,7 @@ public class LoginUserCommandHandlerTests
             Email = command.Email,
             PasswordHash = "stored-password-hash",
             FirstName = "Name",
-            LastName = "Surname",
+            LastName = "Surname"
         };
 
         _userRepository.GetAsync(filter: Arg.Any<Expression<Func<User, bool>>>(),

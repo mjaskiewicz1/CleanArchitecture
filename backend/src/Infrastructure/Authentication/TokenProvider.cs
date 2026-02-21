@@ -12,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Authentication;
 
-public sealed class TokenProvider(IConfiguration configuration, IPasswordHasher passwordHasher) : ITokenProvider
+public sealed class TokenProvider(IConfiguration configuration) : ITokenProvider
 {
     public string CreateAccessToken(User user)
     {
@@ -47,10 +47,5 @@ public sealed class TokenProvider(IConfiguration configuration, IPasswordHasher 
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomBytes);
         return Convert.ToBase64String(randomBytes);
-    }
-
-    public bool ValidateRefreshToken(string token, string tokenHash)
-    {
-        return passwordHasher.Verify(token, tokenHash);
     }
 }

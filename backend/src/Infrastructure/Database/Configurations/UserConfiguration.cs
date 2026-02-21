@@ -3,7 +3,6 @@ using Domain.Entities;
 
 using Infrastructure.Database.Configurations.Generic;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Database.Configurations;

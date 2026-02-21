@@ -1,5 +1,3 @@
-using System;
-
 using Application.Abstractions.Authentication;
 
 using Infrastructure.Authorization;
