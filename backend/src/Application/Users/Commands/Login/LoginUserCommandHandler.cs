@@ -36,7 +36,7 @@ public class LoginUserCommandHandler(
         {
             Token = refreshTokenHash,
             ExpiresAtUtc = expiresAt,
-            UserId = user.Id,
+            UserId = user.Id
         };
         user.LastLogin = DateTimeOffset.UtcNow;
         await unitOfWork.RefreshTokenRepository.AddAsync(refreshTokenEntity, cancellationToken);

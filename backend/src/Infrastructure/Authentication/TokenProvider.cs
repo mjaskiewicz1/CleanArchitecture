@@ -12,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Authentication;
 
-public sealed class TokenProvider(IConfiguration configuration, IPasswordHasher passwordHasher) : ITokenProvider
+public sealed class TokenProvider(IConfiguration configuration) : ITokenProvider
 {
     public string CreateAccessToken(User user)
     {

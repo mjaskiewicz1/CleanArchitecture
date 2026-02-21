@@ -42,10 +42,7 @@ public class LoginUserCommandHandlerTests
 
         var user = new User
         {
-            Email = command.Email,
-            PasswordHash = "stored-password-hash",
-            FirstName = "Name",
-            LastName = "Surname",
+            Email = command.Email, PasswordHash = "stored-password-hash", FirstName = "Name", LastName = "Surname"
         };
 
         _userRepository.GetAsync(filter: Arg.Any<Expression<Func<User, bool>>>(),
