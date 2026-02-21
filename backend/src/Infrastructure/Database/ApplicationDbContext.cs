@@ -1,7 +1,4 @@
-using Application.Abstractions.Data;
-
 using Domain.Entities;
-using Domain.Entities.Generic;
 
 using Infrastructure.Constants;
 

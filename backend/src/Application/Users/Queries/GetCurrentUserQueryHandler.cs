@@ -7,8 +7,6 @@ using Domain.Shared;
 
 using MediatR;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace Application.Users.Queries;
 
 public sealed class GetCurrentUserQueryHandler(

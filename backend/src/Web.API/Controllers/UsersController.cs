@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using Application.Abstractions.Authentication;
 using Application.Users.Commands.Login;
 using Application.Users.Commands.RefreshToken;
 using Application.Users.Commands.Revoke;

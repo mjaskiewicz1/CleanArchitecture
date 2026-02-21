@@ -60,8 +60,7 @@ public class UserSeeder : EntitySeeder<User>
         var adminUser = users[0];
         var adminPermissions = permissions.ConvertAll(p => new UserPermission
         {
-            UserId = adminUser.Id,
-            PermissionId = p.Id,
+            UserId = adminUser.Id, PermissionId = p.Id
         });
 
         await context.UserPermissions.AddRangeAsync(adminPermissions);
@@ -73,7 +72,7 @@ public class UserSeeder : EntitySeeder<User>
         foreach (var randomPermissions in fakerUsers.Select(user => permissions
                      .OrderBy(_ => random.Next())
                      .Take(random.Next(1, permissions.Count))
-                     .Select(p => new UserPermission { UserId = user.Id, PermissionId = p.Id, })
+                     .Select(p => new UserPermission { UserId = user.Id, PermissionId = p.Id })
                      .ToList()))
         {
             await context.UserPermissions.AddRangeAsync(randomPermissions);

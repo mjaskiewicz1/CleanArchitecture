@@ -1,0 +1,12 @@
+version: "1.0"
+profile:
+  name: qodana.recommended 
+
+exclude:
+  - name: "RoslynAnalyzers"
+    paths:
+      - "src/Infrastructure/Database/Migrations"
+  - name: "All"
+    paths:
+      - "src/Infrastructure/Database/Migrations"
+      - .editorconfig

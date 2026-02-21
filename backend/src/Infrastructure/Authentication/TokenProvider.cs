@@ -48,9 +48,4 @@ public sealed class TokenProvider(IConfiguration configuration, IPasswordHasher 
         rng.GetBytes(randomBytes);
         return Convert.ToBase64String(randomBytes);
     }
-
-    public bool ValidateRefreshToken(string token, string tokenHash)
-    {
-        return passwordHasher.Verify(token, tokenHash);
-    }
 }

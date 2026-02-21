@@ -51,5 +51,5 @@ public sealed class User : DbEntity
     /// <summary>
     /// Collection of permissions assigned to the user
     /// </summary>
-    public ICollection<UserPermission> UserPermissions { get; set; } = [];
+    public ICollection<UserPermission> UserPermissions { get; init; } = [];
 }

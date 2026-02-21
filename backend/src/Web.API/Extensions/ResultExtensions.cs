@@ -2,11 +2,13 @@ using System.Net;
 
 using Domain.Shared;
 
+using Hangfire.Annotations;
+
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Api.Extensions;
-
+[UsedImplicitly(ImplicitUseTargetFlags.Members)]
 internal static class ResultExtensions
 {
     private static IHttpContextAccessor? s_accessor;

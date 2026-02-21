@@ -3,8 +3,10 @@ using Application.Common;
 using Domain.Entities;
 using Domain.Entities.Enums;
 
-namespace Application.Users.Dtos;
+using JetBrains.Annotations;
 
+namespace Application.Users.Dtos;
+[UsedImplicitly(ImplicitUseTargetFlags.Members)]
 public sealed record UserPermissionResponse
     : BaseResponse, IResponse<UserPermission, UserPermissionResponse>
 {
@@ -14,9 +16,7 @@ public sealed record UserPermissionResponse
     {
         return new UserPermissionResponse
         {
-            Id = entity.Permission.Id,
-            Name = entity.Permission.Name,
-            CreatedAtUtc = entity.CreatedAtUtc
+            Id = entity.Permission.Id, Name = entity.Permission.Name, CreatedAtUtc = entity.CreatedAtUtc
         };
     }
 }

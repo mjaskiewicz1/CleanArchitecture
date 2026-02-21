@@ -2,12 +2,15 @@ using System.Linq.Expressions;
 
 using Domain.Entities.Generic;
 
+using JetBrains.Annotations;
+
 namespace Domain.Repositories.Generic;
 
 /// <summary>
 /// Repository pattern implementation inspired by:
 /// <see href="https://medium.com/@codebob75/repository-pattern-c-ultimate-guide-entity-framework-core-clean-architecture-dtos-dependency-6a8d8b444dcb" />
 /// </summary>
+[UsedImplicitly(ImplicitUseTargetFlags.Members)]
 public interface IRepository<TEntity> where TEntity : DbEntity
 {
     Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null,

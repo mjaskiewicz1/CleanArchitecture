@@ -1,10 +1,8 @@
 using Domain.Entities;
-using Domain.Entities.Enums;
 
 using Infrastructure.Database.Configurations.Generic;
 using Infrastructure.Database.Extensions;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Database.Configurations;

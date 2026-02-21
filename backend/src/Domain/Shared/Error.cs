@@ -1,7 +1,9 @@
 using System.Net;
 
-namespace Domain.Shared;
+using JetBrains.Annotations;
 
+namespace Domain.Shared;
+[UsedImplicitly(ImplicitUseTargetFlags.Members)]
 public sealed record Error(
     string Message,
     HttpStatusCode StatusCode = HttpStatusCode.BadRequest,
