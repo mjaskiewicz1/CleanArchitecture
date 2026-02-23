@@ -53,18 +53,38 @@ jobs:
       - name: Build solution in Release mode
         run: dotnet build --no-restore --configuration Release -v minimal
 
-      # --no-build reuses binaries from build step above
-      # --coverage enables built-in .NET coverage 
-      # --coverage-output-format cobertura produces XML compatible with most CI tools
-      # --report-trx writes XML test results consumable by GitHub test reporters
-      - name: Run tests with coverage and TRX report
-        run: |
-          dotnet test \
-            --no-restore \
-            --no-build \
-            --configuration Release \
-            --verbosity normal \
-            --coverage \
-            --coverage-output-format cobertura \
-            --report-trx \
-            --report-trx-filename results.trx
+      - name: Run tests with coverage
+        run: dotnet test --configuration Release --no-build -- --coverage --report-trx --results-directory ./TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: backend/TestResults/*.trx
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: backend/TestResults/*.coverage
+
+  publish-results:
+    name: Publish Test Results
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Download all test results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: ./TestResults
+
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: ./TestResults/**/*.trx
+      
