@@ -1,11 +1,9 @@
 name: CI
 
 on:
-  push:
-    branches: ["master"]
   pull_request:
     branches: ["master"]
-    types: [opened, reopened, synchronize, ready_for_review]
+    types: [opened, reopened, synchronize, ready_for_review, edited]
 
 jobs:
   # On PR: validates title follows Conventional Commits spec (feat/fix/chore/docs etc.)
@@ -20,6 +18,8 @@ jobs:
     steps:
       - name: Validate PR title against Conventional Commits spec
         uses: amannn/action-semantic-pull-request@v6
+        with:
+          subjectPattern: ^[A-Z].+$  # forces capital letter at start of subject
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
