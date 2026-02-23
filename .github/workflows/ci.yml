@@ -58,14 +58,14 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: test-results
           path: backend/TestResults/*.trx
 
       - name: Upload coverage
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: coverage
           path: backend/TestResults/*.coverage
@@ -75,10 +75,13 @@ jobs:
     needs: build-and-test
     runs-on: ubuntu-latest
     if: always()
+    permissions:
+      checks: write
+      pull-requests: write
 
     steps:
       - name: Download all test results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7.0.0
         with:
           name: test-results
           path: ./TestResults
