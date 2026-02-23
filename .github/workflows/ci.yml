@@ -75,21 +75,20 @@ jobs:
   publish-results:
     name: Publish Test Results
     needs: build-and-test
-    runs-on: ubuntu-latest
     if: always()
+    runs-on: ubuntu-latest
     permissions:
+      contents: read
       checks: write
       pull-requests: write
-
     steps:
-      - name: Download all test results
-        uses: actions/download-artifact@v7.0.0
+      - name: Download test results
+        uses: actions/download-artifact@v6.0.0
         with:
           name: test-results
-          path: ./TestResults
+          path: backend/TestResults
 
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: ./TestResults/**/*.trx
-      
+          files: backend/TestResults/**/*.trx
