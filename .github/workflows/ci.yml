@@ -12,10 +12,12 @@ jobs:
   # On push: skipped, downstream jobs treat skipped as success and proceed
   conventional-commits:
     if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    permissions:
+      pull-requests: read
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR title against Conventional Commits spec
-        uses: amannn/action-semantic-pull-request@v5
+        uses: amannn/action-semantic-pull-request@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
