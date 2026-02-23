@@ -13,7 +13,9 @@ jobs:
   conventional-commits:
     if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
     permissions:
-      pull-requests: read
+      contents: read
+      checks: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR title against Conventional Commits spec
