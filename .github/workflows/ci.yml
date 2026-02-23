@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+    types: [opened, reopened, synchronize, ready_for_review]
+
+jobs:
+  # On PR: validates title follows Conventional Commits spec (feat/fix/chore/docs etc.)
+  # On push: skipped, downstream jobs treat skipped as success and proceed
+  conventional-commits:
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR title against Conventional Commits spec
+        uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Runs only after conventional-commits passes (or is skipped on push)
+  # GitHub treats skipped jobs as success for the purpose of needs resolution
+  build-and-test:
+    needs: conventional-commits
+    if: always() && (needs.conventional-commits.result == 'success' || needs.conventional-commits.result == 'skipped')
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v6
+
+      - name: Install .NET 10 SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore NuGet dependencies
+        run: dotnet restore
+
+      # Checks formatting rules, -v diag prints diff on failure
+      # --severity info catches info-level issues not just warnings/errors
+      # Migrations excluded because EF generates them outside project style rules
+      - name: Verify code formatting (exclude EF migrations)
+        run: dotnet format --verify-no-changes --severity info -v diag --exclude **/Migrations/**
+
+      # -v minimal silences per-file output, shows only warnings and errors
+      - name: Build solution in Release mode
+        run: dotnet build --no-restore --configuration Release -v minimal
+
+      - name: Run tests with coverage
+        run: dotnet test --configuration Release --no-build -- --coverage --report-trx --results-directory ./TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v6.0.0
+        with:
+          name: test-results
+          path: backend/TestResults/*.trx
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v6.0.0
+        with:
+          name: coverage
+          path: backend/TestResults/*.coverage
+
+  publish-results:
+    name: Publish Test Results
+    needs: build-and-test
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Download test results
+        uses: actions/download-artifact@v6.0.0
+        with:
+          name: test-results
+          path: backend/TestResults
+
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: backend/TestResults/**/*.trx
