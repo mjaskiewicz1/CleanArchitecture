@@ -57,14 +57,5 @@ jobs:
       # --coverage enables built-in .NET coverage 
       # --coverage-output-format cobertura produces XML compatible with most CI tools
       # --report-trx writes XML test results consumable by GitHub test reporters
-      - name: Run tests with coverage and TRX report
-        run: |
-          dotnet test \
-            --no-restore \
-            --no-build \
-            --configuration Release \
-            --verbosity normal \
-            --coverage \
-            --coverage-output-format cobertura \
-            --report-trx \
-            --report-trx-filename results.trx
+      - name: Run tests
+        run: dotnet test --no-restore --verbosity normal --configuration Release
