@@ -2,55 +2,67 @@ name: CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
-    types: [ "opened", "reopened", "synchronize", "ready_for_review" ]
+    branches: ["master"]
+    types: [opened, reopened, synchronize, ready_for_review]
 
 jobs:
-  guard:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event.pull_request.draft == false
-    steps:
-      - run: echo "Pipeline started"
-
+  # On PR: validates title follows Conventional Commits spec (feat/fix/chore/docs etc.)
+  # On push: skipped, downstream jobs treat skipped as success and proceed
   conventional-commits:
-    needs: guard
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Check Conventional Commits
+      - name: Validate PR title against Conventional Commits spec
         uses: amannn/action-semantic-pull-request@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build:
-    needs: guard
+  # Runs only after conventional-commits passes (or is skipped on push)
+  # GitHub treats skipped jobs as success for the purpose of needs resolution
+  build-and-test:
+    needs: conventional-commits
+    if: always() && (needs.conventional-commits.result == 'success' || needs.conventional-commits.result == 'skipped')
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: backend
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout source code
+        uses: actions/checkout@v6
 
-      - name: Setup .NET
+      - name: Install .NET 10 SDK
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x'
 
-      - name: Restore dependencies
+      - name: Restore NuGet dependencies
         run: dotnet restore
 
-      - name: Build release with minimal verbosity
-        run: dotnet build --no-restore --configuration Release -v m
+      # Checks formatting rules, -v diag prints diff on failure
+      # --severity info catches info-level issues not just warnings/errors
+      # Migrations excluded because EF generates them outside project style rules
+      - name: Verify code formatting (exclude EF migrations)
+        run: dotnet format --verify-no-changes --severity info -v diag --exclude **/Migrations/**
 
-      - name: Verify code formatting, skip EF migrations, fail on any issues
-        run: dotnet format --severity info -v diag --exclude "**/Migrations/**" --verify-no-changes
+      # -v minimal silences per-file output, shows only warnings and errors
+      - name: Build solution in Release mode
+        run: dotnet build --no-restore --configuration Release -v minimal
 
-      - name: Run tests in release mode
-        run: dotnet test --no-restore --verbosity normal --configuration Release
+      # --no-build reuses binaries from build step above
+      # --coverage enables built-in .NET coverage 
+      # --coverage-output-format cobertura produces XML compatible with most CI tools
+      # --report-trx writes XML test results consumable by GitHub test reporters
+      - name: Run tests with coverage and TRX report
+        run: |
+          dotnet test \
+            --no-restore \
+            --no-build \
+            --configuration Release \
+            --verbosity normal \
+            --coverage \
+            --coverage-output-format cobertura \
+            --report-trx \
+            --report-trx-filename results.trx
