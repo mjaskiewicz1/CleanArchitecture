@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Validate PR title against Conventional Commits spec
         uses: amannn/action-semantic-pull-request@v6
+        with:
+          subjectPattern: ^[A-Z].+$  # forces capital letter at start of subject
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
