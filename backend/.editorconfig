@@ -394,3 +394,7 @@ dotnet_naming_style.async_suffix.required_suffix = Async
 dotnet_naming_style.async_suffix.word_separator = 
 dotnet_naming_style.async_suffix.capitalization = pascal_case
 
+# Disable async naming rule for test projects
+[tests/**/*.cs]
+dotnet_naming_rule.async_methods_should_end_with_async.severity = none
+
