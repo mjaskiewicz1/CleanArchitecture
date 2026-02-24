@@ -50,7 +50,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     [ProducesResponseType<ProblemDetails>(statusCode: StatusCodes.Status401Unauthorized)]
     [ProducesResponseType<ProblemDetails>(statusCode: StatusCodes.Status403Forbidden)]
     [ProducesResponseType<RefreshTokenResponse>(statusCode: StatusCodes.Status200OK)]
-    public async Task<IActionResult> RefreshToken([FromBody, Required] RefreshTokenCommand command)
+    public async Task<IActionResult> RefreshTokenAsync([FromBody, Required] RefreshTokenCommand command)
     {
         var result = await mediator.Send(command);
 
@@ -61,7 +61,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     [ProducesResponseType<UserProfileResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Me()
+    public async Task<IActionResult> MeAsync()
     {
         var result = await mediator.Send(new GetCurrentUserQuery());
 
