@@ -60,17 +60,19 @@ services:
     networks:
       - clean-architecture-network
     restart: unless-stopped
-
-  mailhog:
-    image: mailhog/mailhog:latest
-    container_name: clean-architecture-mailhog
+  
+  papercut:
+    image: changemakerstudiosus/papercut-smtp:latest
+    container_name: papercut-smtp
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "2525:2525"   # SMTP
+      - "37408:8080"  # Web UI
+    environment:
+      - SMTP_USER=dev
+      - SMTP_PASS=dev123
     networks:
       - clean-architecture-network
     restart: unless-stopped
-
   api:
     container_name: clean-architecture-api
     build:

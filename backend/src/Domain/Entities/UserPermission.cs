@@ -10,12 +10,12 @@ public sealed class UserPermission : DbEntity
     /// <summary>
     /// Gets the identifier of the user associated with this permission entry.
     /// </summary>
-    public required ulong UserId { get; init; }
+    public ulong UserId { get; init; }
 
     /// <summary>
     /// Gets the identifier of the permission assigned to the user.
     /// </summary>
-    public required ulong PermissionId { get; init; }
+    public ulong PermissionId { get; init; }
 
 
     /// <summary>

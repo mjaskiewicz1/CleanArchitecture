@@ -1,14 +1,9 @@
-using Application.Users.Commands.Login;
-
 using Domain.Constants;
 
 using FluentValidation;
 
-using JetBrains.Annotations;
+namespace Application.Users.Commands.Login;
 
-namespace Application.Validators;
-
-[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public class LoginUserCommandValidators : AbstractValidator<LoginUserCommand>
 {
     public LoginUserCommandValidators()
