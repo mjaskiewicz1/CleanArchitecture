@@ -14,6 +14,12 @@ public static class UriExtensions
             return new Uri($"{basePath}/{subPath}", UriKind.Relative);
         }
 
-
+        /// <summary>
+        /// Converts a relative path to a full URI using the provided base path.
+        /// </summary>
+        public Uri ToRelativeUri()
+        {
+            return new Uri(basePath, UriKind.Relative);
+        }
     }
 }

@@ -2,6 +2,7 @@ using System.Text;
 
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
+using Application.Abstractions.Email;
 
 using Domain.Entities.Enums;
 
@@ -9,6 +10,7 @@ using Infrastructure.Authentication;
 using Infrastructure.Authorization;
 using Infrastructure.Constants;
 using Infrastructure.Database;
+using Infrastructure.Email;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -44,6 +46,14 @@ public static class DependencyInjectionExtensions
             services.AddAuthenticationInternal(configuration);
             services.AddAuthorizationInternal();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddEmails(configuration);
+        }
+
+        private void AddEmails(IConfiguration configuration)
+        {
+            services.AddScoped<IEmailSender, SmtpEmailSender>();
+            services.AddScoped<IEmailContentFactory, EmailContentFactory>();
+            services.AddOptions<EmailSettings>().Bind(configuration.GetSection(EmailSettings.SectionName)).ValidateOnStart();
         }
 
         private void AddDatabase(string sqlConnectionString, bool development)
@@ -133,7 +143,8 @@ public static class DependencyInjectionExtensions
                                 Extensions =
                                 {
                                     ["traceId"] = httpContext.TraceIdentifier,
-                                    ["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity.Id
+                                    ["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity
+                                        .Id
                                 }
                             };
 
@@ -156,7 +167,8 @@ public static class DependencyInjectionExtensions
                                 Extensions =
                                 {
                                     ["traceId"] = httpContext.TraceIdentifier,
-                                    ["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity.Id
+                                    ["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity
+                                        .Id
                                 }
                             };
 

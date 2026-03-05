@@ -10,17 +10,17 @@ public sealed class User : DbEntity
     /// <summary>
     /// User's first name
     /// </summary>
-    public required string FirstName { get; init; }
+    public required string FirstName { get; set; }
 
     /// <summary>
     /// User's last name
     /// </summary>
-    public required string LastName { get; init; }
+    public required string LastName { get; set; }
 
     /// <summary>
     /// User's email address used as a unique identifier for authentication
     /// </summary>
-    public required string Email { get; init; }
+    public required string Email { get; set; }
 
     /// <summary>
     /// Hashed password used for authentication.
@@ -31,12 +31,12 @@ public sealed class User : DbEntity
     /// <summary>
     /// Token used to authorize a password reset operation
     /// </summary>
-    public string? PasswordResetToken { get; init; }
+    public string? PasswordResetToken { get; set; }
 
     /// <summary>
     /// Expiration date of the password reset token
     /// </summary>
-    public DateTimeOffset? PasswordResetTokenExpiry { get; init; }
+    public DateTimeOffset? PasswordResetTokenExpiry { get; set; }
 
     /// <summary>
     /// Date and time of the user's last successful login

@@ -26,19 +26,23 @@ internal sealed class TestWebApplicationFactory
     private readonly MsSqlContainer _dbContainer =
         new MsSqlBuilder("mcr.microsoft.com/mssql/server:2025-latest").Build();
 
+    public const string PasswordHash =
+        "784B97F150C499520BEE93F7193B8FA37BC5917ACFC5F55D1B1516B46B98023F-A65B186D61C9D4C17341A33F44317755";
+
+    public TestDataSeeder Seeder => new(Services);
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
         {
-            // Remove the app's ApplicationDbContext registration.
             var descriptor =
                 services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
 
             if (descriptor is not null)
                 services.Remove(descriptor);
 
-            // Register the test database
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(_dbContainer.GetConnectionString()));
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(_dbContainer.GetConnectionString()));
         });
     }
 
@@ -49,22 +53,28 @@ internal sealed class TestWebApplicationFactory
         await scope.ServiceProvider.InitializeInfrastructureAsync(true);
     }
 
-    public async Task<HttpClient> CreateAuthenticatedClientAsync(string login, string password)
+    public override async ValueTask DisposeAsync()
+    {
+        await _dbContainer.StopAsync();
+        await _dbContainer.DisposeAsync();
+        await base.DisposeAsync();
+    }
+
+    public async Task<HttpClient> CreateAuthenticatedClientAsync(string login = "admin@admin.com", string password = "test")
     {
         var client = CreateClient();
-
         var url = EndpointPathMapping.Users.Base.ToRelativeUri(EndpointPathMapping.Users.Login);
-
         var command = new LoginUserCommand(login, password);
         var response = await client.PostAsJsonAsync(url, command);
-
-        response.EnsureSuccessStatusCode();
-
         var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
-
         client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", loginResponse!.AccessToken);
-
         return client;
+    }
+
+    public ApplicationDbContext GetDbContext()
+    {
+        var scope = Services.CreateScope();
+        return scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     }
 }

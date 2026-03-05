@@ -1,11 +1,10 @@
-using System.Linq.Expressions;
+using System.Net;
 
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
-using Application.Users.Queries;
+using Application.Users.Queries.GetCurrentUser;
 
 using Domain.Entities;
-using Domain.Entities.Enums;
 using Domain.Repositories;
 
 using NSubstitute;
@@ -21,10 +20,6 @@ public sealed class GetCurrentUserQueryHandlerTests
 
     private static User CreateUser(ulong userId = 123ul)
     {
-        var permission1 = new Permission { Id = 1, Name = PermissionName.UserCreate };
-
-        var permission2 = new Permission { Id = 2, Name = PermissionName.UserDelete };
-
         var user = new User
         {
             Id = userId,
@@ -32,11 +27,7 @@ public sealed class GetCurrentUserQueryHandlerTests
             LastName = "User",
             Email = "admin@admin.com",
             LastLogin = DateTimeOffset.UtcNow,
-            UserPermissions =
-            [
-                new UserPermission { UserId = userId, PermissionId = permission1.Id, Permission = permission1 },
-                new UserPermission { UserId = userId, PermissionId = permission2.Id, Permission = permission2 }
-            ]
+            UserPermissions = []
         };
 
 
@@ -65,14 +56,7 @@ public sealed class GetCurrentUserQueryHandlerTests
 
         _userContext.UserId.Returns(user.Id);
 
-        _userRepository.GetByIdAsync(
-                id: user.Id,
-                filter: Arg.Any<Expression<Func<User, bool>>>(),
-                include: Arg.Any<Func<IQueryable<User>, IQueryable<User>>>(),
-                selector: Arg.Any<Expression<Func<User, User>>>(),
-                asNoTracking: Arg.Any<bool>(),
-                cancellationToken: Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs(user);
+        _userRepository.GetUserByIdAsync(user.Id, CancellationToken.None).Returns(user);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -94,20 +78,13 @@ public sealed class GetCurrentUserQueryHandlerTests
 
         _userContext.UserId.Returns(999ul);
 
-        _userRepository.GetByIdAsync(
-                id: Arg.Any<ulong>(),
-                filter: Arg.Any<Expression<Func<User, bool>>>(),
-                include: Arg.Any<Func<IQueryable<User>, IQueryable<User>>>(),
-                selector: Arg.Any<Expression<Func<User, User>>>(),
-                asNoTracking: Arg.Any<bool>(),
-                cancellationToken: Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs((User?)null);
+        _userRepository.GetUserByIdAsync(999ul, CancellationToken.None).Returns((User)null!);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
         await Assert.That(result.IsSuccess).IsFalse();
-
+        await Assert.That(result.Error.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
 }

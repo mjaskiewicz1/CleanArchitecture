@@ -29,7 +29,8 @@ public class UserSeeder : EntitySeeder<User>
             Email = "admin@admin.com",
             PasswordHash = Password,
             LastLogin = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero)
-        }
+        },
+        new() { FirstName = "Test", LastName = "User", Email = "test@test.com", PasswordHash = Password }
     ];
 
     protected override IEnumerable<User> FakerData(int seed)

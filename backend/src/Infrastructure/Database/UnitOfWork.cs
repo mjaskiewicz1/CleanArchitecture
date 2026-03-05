@@ -13,11 +13,13 @@ public sealed class UnitOfWork : IUnitOfWork
         _context = context;
         UserRepository = new UserRepository(_context);
         RefreshTokenRepository = new RefreshTokenRepository(_context);
+        PermissionRepository = new PermissionRepository(_context);
     }
 
     private readonly ApplicationDbContext _context;
     public IUserRepository UserRepository { get; }
     public IRefreshTokenRepository RefreshTokenRepository { get; }
+    public IPermissionRepository PermissionRepository { get; }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => _context.SaveChangesAsync(cancellationToken);

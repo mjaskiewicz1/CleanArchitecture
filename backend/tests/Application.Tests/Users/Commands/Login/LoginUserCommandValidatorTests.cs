@@ -1,8 +1,7 @@
-using Application.Tests.Validators.Generic;
+using Application.Tests.Validators;
 using Application.Users.Commands.Login;
-using Application.Validators;
 
-namespace Application.Tests.Validators;
+namespace Application.Tests.Users.Commands.Login;
 
 [MicrosoftDependencyInjectionDataSource]
 public sealed class LoginUserCommandValidatorTests(LoginUserCommandValidators validator)

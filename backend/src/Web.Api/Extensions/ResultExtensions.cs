@@ -1,15 +1,15 @@
 using System.Net;
 
+using Application.Common;
+
 using Domain.Shared;
 
-using Hangfire.Annotations;
-
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Api.Extensions;
 
-[UsedImplicitly(ImplicitUseTargetFlags.Members)]
 internal static class ResultExtensions
 {
     private static IHttpContextAccessor? s_accessor;
@@ -18,24 +18,34 @@ internal static class ResultExtensions
 
     extension(Result result)
     {
-        public IActionResult ToActionResult()
+        public IActionResult ToOkResult()
             => result.IsSuccess
                 ? new OkResult()
+                : result.Error.ToProblemDetails();
+        public IActionResult NoContentResult()
+            => result.IsSuccess
+                ? new NoContentResult()
                 : result.Error.ToProblemDetails();
     }
 
     extension<T>(Result<T> result)
     {
-        public IActionResult ToActionResult()
+        public IActionResult ToOkObjectResult()
             => result.IsSuccess
                 ? new OkObjectResult(result.Value)
                 : result.Error.ToProblemDetails();
-
-        public IActionResult ToCreatedAtRouteResult(string routeName, ulong routeValues)
-            => result.IsSuccess
-                ? new CreatedAtRouteResult(routeName, routeValues, result.Value)
-                : result.Error.ToProblemDetails();
     }
+
+    extension<T>(Result<T> result) where T : BaseResponse
+    {
+        public IActionResult ToCreatedAtAction(string actionName)
+        {
+            return result.IsSuccess
+                ? new CreatedAtActionResult(actionName, null, new { id = result.Value.Id }, result)
+                : result.Error.ToProblemDetails();
+        }
+    }
+
 
     extension(Error error)
     {
@@ -54,9 +64,8 @@ internal static class ResultExtensions
             };
 
             if (error.ValidationErrors?.Count > 0)
-            {
                 problemDetails.Extensions["errors"] = error.ValidationErrors;
-            }
+
             problemDetails.Extensions["traceId"] = httpContext.TraceIdentifier;
             problemDetails.Extensions["requestId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity.Id;
 

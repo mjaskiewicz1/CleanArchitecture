@@ -41,11 +41,23 @@ public sealed class TokenProvider(IConfiguration configuration) : ITokenProvider
         var handler = new JsonWebTokenHandler();
         return handler.CreateToken(tokenDescriptor);
     }
+
     public string CreateRefreshToken()
     {
         var randomBytes = new byte[64];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomBytes);
         return Convert.ToBase64String(randomBytes);
+    }
+
+    public string CreatePasswordResetToken()
+    {
+        var randomBytes = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomBytes);
+        return Convert.ToBase64String(randomBytes)
+            .Replace("+", "-")
+            .Replace("/", "_")
+            .TrimEnd('=');
     }
 }

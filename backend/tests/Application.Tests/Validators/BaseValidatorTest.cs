@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Application.Tests.Validators.Generic;
+namespace Application.Tests.Validators;
 
 public abstract class BaseValidatorTest<TValidator>(TValidator validator)
     where TValidator : IValidator

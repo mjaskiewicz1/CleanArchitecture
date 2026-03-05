@@ -29,6 +29,20 @@ jobs:
     needs: conventional-commits
     if: always() && (needs.conventional-commits.result == 'success' || needs.conventional-commits.result == 'skipped')
     runs-on: ubuntu-latest
+
+    # ------------------------------------------------------------
+    # SMTP service required for integration tests
+    # ------------------------------------------------------------
+
+    services:
+      papercut:
+        image: changemakerstudiosus/papercut-smtp:latest
+        ports:
+          - 2525:2525
+        env:
+          SMTP_USER: dev
+          SMTP_PASS: dev123
+
     defaults:
       run:
         working-directory: backend
@@ -55,8 +69,30 @@ jobs:
       - name: Build solution in Release mode
         run: dotnet build --no-restore --configuration Release -v minimal
 
+
+
+      # ------------------------------------------------------------
+      # Wait for SMTP service used by integration tests
+      # ------------------------------------------------------------
+
+      - name: Wait for SMTP service
+        run: |
+          for i in {1..20}; do
+            nc -z localhost 2525 && echo "SMTP ready" && exit 0
+            sleep 1
+          done
+          echo "SMTP not ready"
+          exit 1
+
+
+
       - name: Run tests with coverage
         run: dotnet test --configuration Release --no-build -- --coverage --report-trx --results-directory ./TestResults
+        env:
+          EmailSettings__SmtpHost: localhost
+          EmailSettings__SmtpPort: 2525
+          EmailSettings__SmtpUser: dev
+          EmailSettings__SmtpPass: dev123
 
       - name: Upload test results
         if: always()
