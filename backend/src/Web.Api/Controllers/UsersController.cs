@@ -59,12 +59,8 @@ public class UsersController(IMediator mediator) : ControllerBase
     [ProducesResponseType<ProblemDetails>(statusCode: StatusCodes.Status401Unauthorized)]
     [ProducesResponseType<ProblemDetails>(statusCode: StatusCodes.Status403Forbidden)]
     [ProducesResponseType<RefreshTokenResponse>(statusCode: StatusCodes.Status200OK)]
-<<<<<<< HEAD
     public async Task<IActionResult> RefreshTokenAsync([FromBody, Required] RefreshTokenCommand command,
         CancellationToken cancellationToken)
-=======
-    public async Task<IActionResult> RefreshToken([FromBody, Required] RefreshTokenCommand command)
->>>>>>> parent of fc4acf8 (chore: Enable TreatWarningsAsErrors and enforce async naming rules (#8))
     {
         var result = await mediator.Send(command, cancellationToken);
 
@@ -75,11 +71,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     [ProducesResponseType<UserDetailsResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
-<<<<<<< HEAD
     public async Task<IActionResult> MeAsync(CancellationToken cancellationToken)
-=======
-    public async Task<IActionResult> Me()
->>>>>>> parent of fc4acf8 (chore: Enable TreatWarningsAsErrors and enforce async naming rules (#8))
     {
         var result = await mediator.Send(new GetCurrentUserQuery(), cancellationToken);
 
