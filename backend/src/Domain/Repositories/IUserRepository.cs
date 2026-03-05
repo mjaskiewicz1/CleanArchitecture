@@ -7,9 +7,9 @@ public interface IUserRepository : IRepository<User>
 {
     public Task<User?> GetUserByIdAsync(ulong id, CancellationToken cancellationToken = default);
 
-    public Task<IEnumerable<User>> GetUsersWithFiltersAsync(ulong cursor, uint take, ulong? id,
+    public Task<List<User>> GetUsersWithFiltersAsync(ulong cursor, uint take, ulong? id,
         string? email = null, CancellationToken cancellationToken = default);
 
-    public Task<User> UpdateUserPermissionsAsync(User user, IEnumerable<Permission> permissions,
+    public Task<User> UpdateUserPermissionsAsync(User user, List<Permission> permissions,
         CancellationToken cancellationToken);
 }

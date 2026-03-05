@@ -30,7 +30,7 @@ public sealed class UpdateUserCommandHandler(IUnitOfWork unitOfWork)
         var permissions = await unitOfWork.PermissionRepository.GetAllAsync(asNoTracking: false, filter:
             x => request.PermissionIds.Contains(x.Id), cancellationToken: cancellationToken);
 
-        if (permissions.Count() != request.PermissionIds.Count)
+        if (permissions.Count != request.PermissionIds.Count)
             return Result<UserDetailsResponse>.Failure(Error.BadRequest("One or more permissions do not exist"));
         request.Update(user);
         await unitOfWork.UserRepository.UpdateUserPermissionsAsync(user, permissions, cancellationToken);

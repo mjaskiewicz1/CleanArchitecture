@@ -155,6 +155,6 @@ public class UpdateUserCommandHandlerTests
         // Assert
         await Assert.That(result.IsSuccess).IsFalse();
         await _userRepository.DidNotReceive().UpdateUserPermissionsAsync(user: Arg.Any<User>(),
-            permissions: Arg.Any<IEnumerable<Permission>>(), cancellationToken: Arg.Any<CancellationToken>());
+            permissions: Arg.Any<List<Permission>>(), cancellationToken: Arg.Any<CancellationToken>());
     }
 }
