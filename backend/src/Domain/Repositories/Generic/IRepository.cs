@@ -13,13 +13,13 @@ namespace Domain.Repositories.Generic;
 [UsedImplicitly(ImplicitUseTargetFlags.Members)]
 public interface IRepository<TEntity> where TEntity : DbEntity
 {
-    Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null,
+    Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null,
         Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null,
         Expression<Func<TEntity, TEntity>>? selector = null,
         bool asNoTracking = true,
         CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<TEntity>> GetAllAsync(uint cursor, uint take,
+    Task<List<TEntity>> GetAllAsync(uint cursor, uint take,
         Expression<Func<TEntity, bool>>? filter = null,
         Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null,
         Expression<Func<TEntity, TEntity>>? selector = null,
@@ -39,7 +39,7 @@ public interface IRepository<TEntity> where TEntity : DbEntity
         CancellationToken cancellationToken = default);
 
     Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
-    Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task AddRangeAsync(List<TEntity> entities, CancellationToken cancellationToken = default);
 
     void Update(TEntity entity);
 

@@ -17,7 +17,7 @@ public class Repository<TEntity>(ApplicationDbContext dbContext) : IRepository<T
     private IQueryable<TEntity> BaseQuery(bool asNoTracking)
         => asNoTracking ? _context.Set<TEntity>().AsNoTracking() : _context.Set<TEntity>();
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null,
+    public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null,
         Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null,
         Expression<Func<TEntity, TEntity>>? selector = null,
         bool asNoTracking = true,
@@ -38,7 +38,7 @@ public class Repository<TEntity>(ApplicationDbContext dbContext) : IRepository<T
         return await query.ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync(uint cursor, uint take,
+    public async Task<List<TEntity>> GetAllAsync(uint cursor, uint take,
         Expression<Func<TEntity, bool>>? filter = null,
         Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null,
         Expression<Func<TEntity, TEntity>>? selector = null,
@@ -107,7 +107,7 @@ public class Repository<TEntity>(ApplicationDbContext dbContext) : IRepository<T
     public async Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         => await _context.Set<TEntity>().AddAsync(entity, cancellationToken);
 
-    public async Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    public async Task AddRangeAsync(List<TEntity> entities, CancellationToken cancellationToken = default)
         => await _context.Set<TEntity>().AddRangeAsync(entities, cancellationToken);
 
     public void Update(TEntity entity)

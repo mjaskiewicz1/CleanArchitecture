@@ -37,7 +37,7 @@ public class UserRepository(ApplicationDbContext context) : Repository<User>(con
         return user;
     }
 
-    public async Task<IEnumerable<User>> GetUsersWithFiltersAsync(ulong cursor, uint take, ulong? id,
+    public async Task<List<User>> GetUsersWithFiltersAsync(ulong cursor, uint take, ulong? id,
         string? email = null, CancellationToken cancellationToken = default)
     {
         var users = await _context.Users
@@ -62,10 +62,10 @@ public class UserRepository(ApplicationDbContext context) : Repository<User>(con
         return users;
     }
 
-    public async Task<User> UpdateUserPermissionsAsync(User user, IEnumerable<Permission> permissions,
+    public async Task<User> UpdateUserPermissionsAsync(User user, List<Permission> permissions,
         CancellationToken cancellationToken)
     {
-        var permissionIds = permissions.Select(p => p.Id).ToList();
+        var permissionIds = permissions.ConvertAll(p => p.Id);
 
         await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
