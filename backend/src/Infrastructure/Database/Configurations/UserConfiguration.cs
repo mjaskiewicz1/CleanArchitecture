@@ -18,8 +18,8 @@ public class UserConfiguration : DbEntityConfiguration<User>
         builder.Property(static x => x.Email).IsRequired().HasMaxLength(EntityConstraintsValues.EmailLength);
         builder.Property(static x => x.PasswordHash).IsRequired(false)
             .HasMaxLength(EntityConstraintsValues.PasswordHashLength);
-        builder.Property(static x => x.LastLogin).IsRequired(false);
-        builder.Property(static x => x.PasswordResetTokenExpiry).IsRequired(false);
+        builder.Property(static x => x.LastLoginUtc).IsRequired(false);
+        builder.Property(static x => x.PasswordResetTokenExpiryUtc).IsRequired(false);
         builder.Property(static x => x.PasswordResetToken).HasMaxLength(EntityConstraintsValues.TokenLength)
             .IsRequired(false);
 

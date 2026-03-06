@@ -36,12 +36,12 @@ public sealed class User : DbEntity
     /// <summary>
     /// Expiration date of the password reset token
     /// </summary>
-    public DateTimeOffset? PasswordResetTokenExpiry { get; set; }
+    public DateTime? PasswordResetTokenExpiryUtc { get; set; }
 
     /// <summary>
     /// Date and time of the user's last successful login
     /// </summary>
-    public DateTimeOffset? LastLogin { get; set; }
+    public DateTime? LastLoginUtc { get; set; }
 
     /// <summary>
     /// Collection of refresh tokens issued for this user

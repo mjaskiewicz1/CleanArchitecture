@@ -38,7 +38,7 @@ public class LoginUserCommandHandler(
             ExpiresAtUtc = expiresAt,
             UserId = user.Id
         };
-        user.LastLogin = DateTimeOffset.UtcNow;
+        user.LastLoginUtc = DateTime.UtcNow;
         await unitOfWork.RefreshTokenRepository.AddAsync(refreshTokenEntity, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

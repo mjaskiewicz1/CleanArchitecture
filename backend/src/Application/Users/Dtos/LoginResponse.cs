@@ -1,3 +1,3 @@
 namespace Application.Users.Dtos;
 
-public sealed record LoginResponse(string AccessToken, string RefreshToken, DateTimeOffset ExpiresAt);
+public sealed record LoginResponse(string AccessToken, string RefreshToken, DateTime ExpiresAt);

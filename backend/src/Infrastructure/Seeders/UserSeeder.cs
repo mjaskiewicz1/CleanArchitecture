@@ -28,7 +28,7 @@ public class UserSeeder : EntitySeeder<User>
             LastName = "User",
             Email = "admin@admin.com",
             PasswordHash = Password,
-            LastLogin = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero)
+            LastLoginUtc = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         },
         new() { FirstName = "Test", LastName = "User", Email = "test@test.com", PasswordHash = Password }
     ];

@@ -8,22 +8,12 @@ using NSubstitute;
 
 namespace Application.Tests.Users.Queries;
 
-internal sealed class GetAllUsersQueryHandlerTests
+internal sealed class GetAllUsersQueryHandlerTests : UserBaseTest
 {
     private IUnitOfWork _unitOfWork = null!;
     private IUserRepository _userRepository = null!;
     private GetAllUsersQueryHandler _handler = null!;
 
-    private static User CreateUser(ulong id, string email)
-        => new()
-        {
-            Id = id,
-            FirstName = "Test",
-            LastName = "User",
-            Email = email,
-            LastLogin = DateTimeOffset.UtcNow,
-            UserPermissions = []
-        };
 
     [Before(Test)]
     public void Setup()
@@ -43,7 +33,8 @@ internal sealed class GetAllUsersQueryHandlerTests
         var usersFromRepo = new List<User> { CreateUser(1, "a@test.com"), CreateUser(2, "b@test.com") };
         var query = new GetAllUsersQuery { Cursor = 0, TakeAmount = 10 };
 
-        _userRepository.GetUsersWithFiltersAsync(Arg.Is(query.Cursor), Arg.Is(query.TakeAmount), Arg.Any<ulong?>(), Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(usersFromRepo);
+        _userRepository.GetUsersWithFiltersAsync(Arg.Is(query.Cursor), Arg.Is(query.TakeAmount), Arg.Any<ulong?>(),
+            Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(usersFromRepo);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
