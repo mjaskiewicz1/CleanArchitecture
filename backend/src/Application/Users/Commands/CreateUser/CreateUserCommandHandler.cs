@@ -3,6 +3,7 @@ using Application.Abstractions.Data;
 using Application.Abstractions.Email;
 using Application.Users.Dtos;
 
+using Domain.Errors;
 using Domain.Shared;
 
 using MediatR;
@@ -18,10 +19,10 @@ public sealed class CreateUserCommandHandler(
     public async Task<Result<UserResponse>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         if (await unitOfWork.UserRepository.ExistsAsync(x => x.Email == request.Email, cancellationToken))
-            return Result<UserResponse>.Failure(Error.Conflict("User with this email already exists"));
+            return Result<UserResponse>.Failure(UserErrors.EmailAlreadyExists);
 
         if (!await unitOfWork.PermissionRepository.AllExistAsync(request.PermissionIds, cancellationToken))
-            return Result<UserResponse>.Failure(Error.BadRequest("One or more permissions do not exist"));
+            return Result<UserResponse>.Failure(UserErrors.PermissionsNotFound);
 
 
         var user = request.ToEntity();

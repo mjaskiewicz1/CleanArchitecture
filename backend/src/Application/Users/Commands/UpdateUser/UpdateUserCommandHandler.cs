@@ -1,6 +1,7 @@
 using Application.Abstractions.Data;
 using Application.Users.Dtos;
 
+using Domain.Errors;
 using Domain.Shared;
 
 using MediatR;
@@ -19,19 +20,19 @@ public sealed class UpdateUserCommandHandler(IUnitOfWork unitOfWork)
             include: x => x.Include(u => u.UserPermissions), cancellationToken: cancellationToken);
 
         if (user is null)
-            return Result<UserDetailsResponse>.Failure(Error.NotFound("User not found"));
+            return Result<UserDetailsResponse>.Failure(UserErrors.NotFound);
 
         if (await unitOfWork.UserRepository.ExistsAsync(x => x.Email == request.Email && x.Id != request.Id,
                 cancellationToken))
         {
-            return Result<UserDetailsResponse>.Failure(Error.Conflict("User with this email already exists"));
+            return Result<UserDetailsResponse>.Failure(UserErrors.EmailAlreadyExists);
         }
 
         var permissions = await unitOfWork.PermissionRepository.GetAllAsync(asNoTracking: false, filter:
             x => request.PermissionIds.Contains(x.Id), cancellationToken: cancellationToken);
 
         if (permissions.Count != request.PermissionIds.Count)
-            return Result<UserDetailsResponse>.Failure(Error.BadRequest("One or more permissions do not exist"));
+            return Result<UserDetailsResponse>.Failure(UserErrors.PermissionsNotFound);
         request.Update(user);
         await unitOfWork.UserRepository.UpdateUserPermissionsAsync(user, permissions, cancellationToken);
 
