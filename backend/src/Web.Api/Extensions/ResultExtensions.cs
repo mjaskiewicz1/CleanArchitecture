@@ -5,7 +5,6 @@ using Application.Common;
 using Domain.Shared;
 
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Api.Extensions;
@@ -41,7 +40,7 @@ internal static class ResultExtensions
         public IActionResult ToCreatedAtAction(string actionName)
         {
             return result.IsSuccess
-                ? new CreatedAtActionResult(actionName, null, new { id = result.Value.Id }, result)
+                ? new CreatedAtActionResult(actionName, null, new { id = result.Value.Id }, result.Value)
                 : result.Error.ToProblemDetails();
         }
     }

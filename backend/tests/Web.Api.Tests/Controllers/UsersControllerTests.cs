@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using Application.Users.Commands.CreateUser;
 using Application.Users.Commands.Login;
 using Application.Users.Commands.RefreshToken;
+using Application.Users.Commands.SetPassword;
 using Application.Users.Commands.UpdateUser;
 using Application.Users.Dtos;
 
@@ -29,6 +30,7 @@ internal class UsersControllerTests
         private const string Revoke = EndpointPathMapping.Users.Revoke;
         private const string RefreshToken = EndpointPathMapping.Users.RefreshToken;
         private const string Me = EndpointPathMapping.Users.Me;
+        private const string SetPassword = EndpointPathMapping.Users.SetPassword;
 
         [Test]
         [Arguments("fake@fake.pl", "fake")]
@@ -169,11 +171,12 @@ internal class UsersControllerTests
         public async Task GetProfileAsync_AuthenticatedRequest_ReturnsOk(string login, string password)
         {
             // Arrange
-
             var client = await WebApplicationFactory.CreateAuthenticatedClientAsync(login, password);
             var meUrl = UsersPath.ToRelativeUri(Me);
+
             // Act
             var response = await client.GetAsync(meUrl);
+
             // Assert
             await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
             var result = await response.Content.ReadFromJsonAsync<UserDetailsResponse>();
@@ -194,6 +197,101 @@ internal class UsersControllerTests
 
             // Assert
             await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
+        }
+
+        [Test]
+        [Arguments("", "Password123")]
+        [Arguments("token", "")]
+        [Arguments("", "")]
+        public async Task SetPasswordAsync_InvalidData_ReturnsBadRequest(string token, string password)
+        {
+            // Arrange
+            var client = WebApplicationFactory.CreateClient();
+            var request = new SetPasswordCommand(token, password);
+            var url = UsersPath.ToRelativeUri(SetPassword);
+
+            // Act
+            var response = await client.PostAsJsonAsync(url, request);
+
+            // Assert
+            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+
+            var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+
+            await Assert.That(problemDetails).IsNotNull();
+            await Assert.That(problemDetails!.Title).IsNotNull();
+        }
+
+        [Test]
+        public async Task SetPasswordAsync_InvalidToken_ReturnsBadRequest()
+        {
+            // Arrange
+            var client = WebApplicationFactory.CreateClient();
+            var request = new SetPasswordCommand("invalid-token", "Password123");
+            var url = UsersPath.ToRelativeUri(SetPassword);
+
+            // Act
+            var response = await client.PostAsJsonAsync(url, request);
+
+            // Assert
+            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+
+            var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+
+            await Assert.That(problemDetails).IsNotNull();
+            await Assert.That(problemDetails!.Title).IsNotNull();
+        }
+
+        [Test]
+        public async Task SetPasswordAsync_ExpiredToken_ReturnsBadRequest()
+        {
+            // Arrange
+            var user = await WebApplicationFactory.Seeder.CreateUserWithPermissionsAsync();
+            var dbContext = WebApplicationFactory.GetDbContext();
+
+            user.PasswordResetToken = "expired-token";
+            user.PasswordResetTokenExpiryUtc = DateTime.UtcNow.AddHours(-1);
+
+            await dbContext.SaveChangesAsync();
+
+            var client = WebApplicationFactory.CreateClient();
+
+            var request = new SetPasswordCommand("expired-token", "Password123");
+
+            var url = UsersPath.ToRelativeUri(SetPassword);
+
+            // Act
+            var response = await client.PostAsJsonAsync(url, request);
+
+            // Assert
+            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+        }
+
+        [Test]
+        public async Task SetPasswordAsync_ValidToken_ReturnsNoContent()
+        {
+            // Arrange
+            var user = await WebApplicationFactory.Seeder.CreateUserWithPermissionsAsync();
+            var dbContext = WebApplicationFactory.GetDbContext();
+
+            user.PasswordResetToken = "valid-token";
+            user.PasswordResetTokenExpiryUtc = DateTime.UtcNow.AddHours(1);
+            dbContext.Update(user);
+            await dbContext.SaveChangesAsync();
+            var client = WebApplicationFactory.CreateClient();
+            var request = new SetPasswordCommand(user.PasswordResetToken, "Password123");
+            var url = UsersPath.ToRelativeUri(SetPassword);
+
+            // Act
+            var response = await client.PostAsJsonAsync(url, request);
+
+            // Assert
+            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
+            var updatedUser = await dbContext.Users.AsNoTracking().FirstAsync(x => x.Id == user.Id);
+
+            await Assert.That(updatedUser.PasswordHash).IsNotNull();
+            await Assert.That(updatedUser.PasswordResetToken).IsNull();
+            await Assert.That(updatedUser.PasswordResetTokenExpiryUtc).IsNull();
         }
     }
 
