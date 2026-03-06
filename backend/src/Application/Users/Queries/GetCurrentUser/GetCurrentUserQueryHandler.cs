@@ -2,6 +2,7 @@ using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Application.Users.Dtos;
 
+using Domain.Errors;
 using Domain.Shared;
 
 using MediatR;
@@ -19,7 +20,7 @@ public sealed class GetCurrentUserQueryHandler(
     {
         var user = await unitOfWork.UserRepository.GetUserByIdAsync(userContext.UserId, cancellationToken);
         return user is null
-            ? Result<UserDetailsResponse>.Failure(Error.NotFound("User not found"))
+            ? Result<UserDetailsResponse>.Failure(UserErrors.NotFound)
             : Result.Success(UserDetailsResponse.FromEntity(user));
     }
 }

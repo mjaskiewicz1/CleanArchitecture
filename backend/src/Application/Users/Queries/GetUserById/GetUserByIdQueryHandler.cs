@@ -1,6 +1,7 @@
 using Application.Abstractions.Data;
 using Application.Users.Dtos;
 
+using Domain.Errors;
 using Domain.Shared;
 
 using MediatR;
@@ -14,7 +15,7 @@ public sealed class GetUserByIdQueryHandler(IUnitOfWork unitOfWork)
     {
         var user = await unitOfWork.UserRepository.GetUserByIdAsync(request.Id, cancellationToken);
         return user is null
-            ? Result<UserDetailsResponse>.Failure(Error.NotFound("User not found"))
+            ? Result<UserDetailsResponse>.Failure(UserErrors.NotFound)
             : Result.Success(UserDetailsResponse.FromEntity(user));
     }
 }
