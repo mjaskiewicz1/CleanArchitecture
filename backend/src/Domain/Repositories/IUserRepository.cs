@@ -12,4 +12,6 @@ public interface IUserRepository : IRepository<User>
 
     public Task<User> UpdateUserPermissionsAsync(User user, List<Permission> permissions,
         CancellationToken cancellationToken);
+
+    Task<bool> SetPasswordByTokenAsync(string token, string hashedPassword, CancellationToken cancellationToken);
 }

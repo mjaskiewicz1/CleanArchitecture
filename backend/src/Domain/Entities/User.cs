@@ -26,7 +26,7 @@ public sealed class User : DbEntity
     /// Hashed password used for authentication.
     /// Null indicates that the password has not been set yet.
     /// </summary>
-    public string? PasswordHash { get; init; }
+    public string? PasswordHash { get; set; }
 
     /// <summary>
     /// Token used to authorize a password reset operation

@@ -2,6 +2,7 @@
 using Application.Abstractions.Data;
 using Application.Users.Dtos;
 
+using Domain.Errors;
 using Domain.Shared;
 
 using MediatR;
@@ -25,7 +26,7 @@ public class RefreshTokenCommandHandler(
                 .ThenInclude(up => up.Permission),
             cancellationToken: cancellationToken);
         if (refreshToken == null)
-            return Result<RefreshTokenResponse>.Failure(Error.BadRequest("The refresh token has expired."));
+            return Result<RefreshTokenResponse>.Failure(UserErrors.InvalidToken);
         var accessToken = tokenProvider.CreateAccessToken(refreshToken.User);
         var newRefreshToken = tokenProvider.CreateRefreshToken();
         var refreshTokenHash = passwordHasher.Hash(newRefreshToken);

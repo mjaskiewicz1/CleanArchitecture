@@ -5,6 +5,7 @@ using Application.Users.Commands.DeleteUser;
 using Application.Users.Commands.Login;
 using Application.Users.Commands.RefreshToken;
 using Application.Users.Commands.Revoke;
+using Application.Users.Commands.SetPassword;
 using Application.Users.Commands.UpdateUser;
 using Application.Users.Dtos;
 using Application.Users.Queries.GetAllUser;
@@ -65,6 +66,19 @@ public class UsersController(IMediator mediator) : ControllerBase
         var result = await mediator.Send(command, cancellationToken);
 
         return result.ToOkObjectResult();
+    }
+
+    [HttpPost(EndpointPathMapping.Users.SetPassword)]
+    [AllowAnonymous]
+    [EndpointDescription("Sets a new password using a reset token.")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> SetPasswordAsync([FromBody, Required] SetPasswordCommand command,
+        CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(command, cancellationToken);
+
+        return result.NoContentResult();
     }
 
     [HttpGet(EndpointPathMapping.Users.Me)]

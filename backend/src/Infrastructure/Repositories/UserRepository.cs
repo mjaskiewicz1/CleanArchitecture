@@ -103,4 +103,18 @@ public class UserRepository(ApplicationDbContext context) : Repository<User>(con
             throw;
         }
     }
+
+    public async Task<bool> SetPasswordByTokenAsync(string token, string hashedPassword,
+        CancellationToken cancellationToken)
+    {
+        var rowsAffected = await _context.Users
+            .Where(u => u.PasswordResetToken == token && u.PasswordResetTokenExpiryUtc > DateTime.UtcNow)
+            .ExecuteUpdateAsync(u => u
+                    .SetProperty(x => x.PasswordHash, hashedPassword)
+                    .SetProperty(x => x.PasswordResetToken, (string?)null)
+                    .SetProperty(x => x.PasswordResetTokenExpiryUtc, (DateTime?)null),
+                cancellationToken);
+
+        return rowsAffected != 0;
+    }
 }
