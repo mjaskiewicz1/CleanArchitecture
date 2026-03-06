@@ -22,7 +22,7 @@ namespace Infrastructure.Database.Migrations
                     Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    CreatedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,9 +41,9 @@ namespace Infrastructure.Database.Migrations
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
                     PasswordResetToken = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    PasswordResetTokenExpiry = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LastLogin = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    CreatedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    PasswordResetTokenExpiryUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastLoginUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,7 +60,7 @@ namespace Infrastructure.Database.Migrations
                     Token = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ExpiresAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
-                    CreatedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,7 +83,7 @@ namespace Infrastructure.Database.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
                     PermissionId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
-                    CreatedAtUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

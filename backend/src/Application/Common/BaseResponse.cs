@@ -11,5 +11,5 @@ public abstract record BaseResponse
     public required ulong Id { get; init; }
 
     [JsonPropertyOrder(int.MaxValue)]
-    public required DateTimeOffset CreatedAtUtc { get; init; }
+    public required DateTime CreatedAtUtc { get; init; }
 }

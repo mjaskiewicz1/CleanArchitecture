@@ -10,28 +10,11 @@ using NSubstitute;
 
 namespace Application.Tests.Users.Queries;
 
-public sealed class GetUserByIdQueryHandlerTests
+public sealed class GetUserByIdQueryHandlerTests : UserBaseTest
 {
     private IUnitOfWork _unitOfWork = null!;
     private IUserRepository _userRepository = null!;
     private GetUserByIdQueryHandler _handler = null!;
-
-    private static User CreateUser(ulong userId = 123ul)
-    {
-        var user = new User
-        {
-            Id = userId,
-            FirstName = "Admin",
-            LastName = "User",
-            Email = "admin@admin.com",
-            LastLogin = DateTimeOffset.UtcNow,
-            UserPermissions = []
-        };
-
-
-        return user;
-    }
-
 
     [Before(Test)]
     public void Setup()

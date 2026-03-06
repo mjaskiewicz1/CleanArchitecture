@@ -9,7 +9,7 @@ public sealed record UserDetailsResponse : BaseResponse, IResponse<User, UserDet
     public required string FirstName { get; init; }
     public required string LastName { get; init; }
     public required string Email { get; init; }
-    public DateTimeOffset? LastLogin { get; init; }
+    public DateTime? LastLoginUtc { get; init; }
 
     public IEnumerable<UserPermissionResponse> Permissions { get; private init; } = [];
 
@@ -21,7 +21,7 @@ public sealed record UserDetailsResponse : BaseResponse, IResponse<User, UserDet
             FirstName = entity.FirstName,
             LastName = entity.LastName,
             Email = entity.Email,
-            LastLogin = entity.LastLogin,
+            LastLoginUtc = entity.LastLoginUtc,
             Permissions = entity.UserPermissions.Select(UserPermissionResponse.FromEntity),
             CreatedAtUtc = entity.CreatedAtUtc
         };

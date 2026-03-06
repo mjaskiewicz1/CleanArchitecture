@@ -27,7 +27,7 @@ public sealed class CreateUserCommandHandler(
 
         var user = request.ToEntity();
         user.PasswordResetToken = tokenProvider.CreatePasswordResetToken();
-        user.PasswordResetTokenExpiry = DateTimeOffset.UtcNow.AddHours(3);
+        user.PasswordResetTokenExpiryUtc = DateTime.UtcNow.AddHours(3);
 
         await unitOfWork.UserRepository.AddAsync(user, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);

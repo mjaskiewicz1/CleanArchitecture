@@ -23,7 +23,7 @@ public class UserRepository(ApplicationDbContext context) : Repository<User>(con
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
-                LastLogin = u.LastLogin,
+                LastLoginUtc = u.LastLoginUtc,
                 UserPermissions = u.UserPermissions
                     .Select(up => new UserPermission
                     {
@@ -50,7 +50,7 @@ public class UserRepository(ApplicationDbContext context) : Repository<User>(con
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
-                LastLogin = u.LastLogin,
+                LastLoginUtc = u.LastLoginUtc,
                 UserPermissions = u.UserPermissions
                     .Select(up => new UserPermission
                     {
