@@ -41,7 +41,7 @@ internal static class ResultExtensions
         public IActionResult ToCreatedAtAction(string actionName)
         {
             return result.IsSuccess
-                ? new CreatedAtActionResult(actionName, null, new { id = result.Value.Id }, result)
+                ? new CreatedAtActionResult(actionName, null, new { id = result.Value.Id }, result.Value)
                 : result.Error.ToProblemDetails();
         }
     }
