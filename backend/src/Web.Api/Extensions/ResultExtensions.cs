@@ -5,7 +5,6 @@ using Application.Common;
 using Domain.Shared;
 
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Api.Extensions;

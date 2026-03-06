@@ -197,6 +197,7 @@ internal class UsersControllerTests
             // Assert
             await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
         }
+
         [Test]
         [Arguments("", "Password123")]
         [Arguments("token", "")]
@@ -279,12 +280,12 @@ internal class UsersControllerTests
 
             user.PasswordResetToken = "valid-token";
             user.PasswordResetTokenExpiryUtc = DateTime.UtcNow.AddHours(1);
-
+            dbContext.Update(user);
             await dbContext.SaveChangesAsync();
 
             var client = WebApplicationFactory.CreateClient();
 
-            var request = new SetPasswordCommand("valid-token", "Password123");
+            var request = new SetPasswordCommand(user.PasswordResetToken, "Password123");
 
             var url = UsersPath.ToRelativeUri(SetPassword);
 
@@ -293,8 +294,7 @@ internal class UsersControllerTests
 
             // Assert
             await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
-
-            var updatedUser = await dbContext.Users.FirstAsync(x => x.Id == user.Id);
+            var updatedUser = await dbContext.Users.AsNoTracking().FirstAsync(x => x.Id == user.Id);
 
             await Assert.That(updatedUser.PasswordHash).IsNotNull();
             await Assert.That(updatedUser.PasswordResetToken).IsNull();
