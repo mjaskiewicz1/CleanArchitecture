@@ -13,11 +13,9 @@ public sealed class SetPasswordCommandHandler(IUnitOfWork unitOfWork, IPasswordH
 {
     public async Task<Result> Handle(SetPasswordCommand request, CancellationToken cancellationToken)
     {
-
         var hashedPassword = passwordHasher.Hash(request.Password);
         if (!await unitOfWork.UserRepository.SetPasswordByTokenAsync(request.Token, hashedPassword, cancellationToken))
             return Result.Failure(UserErrors.InvalidToken);
-
 
         return Result.Success();
     }

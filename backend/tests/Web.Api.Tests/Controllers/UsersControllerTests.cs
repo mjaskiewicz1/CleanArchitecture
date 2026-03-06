@@ -171,11 +171,12 @@ internal class UsersControllerTests
         public async Task GetProfileAsync_AuthenticatedRequest_ReturnsOk(string login, string password)
         {
             // Arrange
-
             var client = await WebApplicationFactory.CreateAuthenticatedClientAsync(login, password);
             var meUrl = UsersPath.ToRelativeUri(Me);
+
             // Act
             var response = await client.GetAsync(meUrl);
+
             // Assert
             await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
             var result = await response.Content.ReadFromJsonAsync<UserDetailsResponse>();
@@ -207,7 +208,6 @@ internal class UsersControllerTests
             // Arrange
             var client = WebApplicationFactory.CreateClient();
             var request = new SetPasswordCommand(token, password);
-
             var url = UsersPath.ToRelativeUri(SetPassword);
 
             // Act
@@ -227,9 +227,7 @@ internal class UsersControllerTests
         {
             // Arrange
             var client = WebApplicationFactory.CreateClient();
-
             var request = new SetPasswordCommand("invalid-token", "Password123");
-
             var url = UsersPath.ToRelativeUri(SetPassword);
 
             // Act
@@ -249,7 +247,6 @@ internal class UsersControllerTests
         {
             // Arrange
             var user = await WebApplicationFactory.Seeder.CreateUserWithPermissionsAsync();
-
             var dbContext = WebApplicationFactory.GetDbContext();
 
             user.PasswordResetToken = "expired-token";
@@ -275,18 +272,14 @@ internal class UsersControllerTests
         {
             // Arrange
             var user = await WebApplicationFactory.Seeder.CreateUserWithPermissionsAsync();
-
             var dbContext = WebApplicationFactory.GetDbContext();
 
             user.PasswordResetToken = "valid-token";
             user.PasswordResetTokenExpiryUtc = DateTime.UtcNow.AddHours(1);
             dbContext.Update(user);
             await dbContext.SaveChangesAsync();
-
             var client = WebApplicationFactory.CreateClient();
-
             var request = new SetPasswordCommand(user.PasswordResetToken, "Password123");
-
             var url = UsersPath.ToRelativeUri(SetPassword);
 
             // Act

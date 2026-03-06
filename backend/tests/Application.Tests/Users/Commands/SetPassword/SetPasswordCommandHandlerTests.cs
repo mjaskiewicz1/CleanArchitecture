@@ -22,7 +22,6 @@ public class SetPasswordCommandHandlerTests
         _unitOfWork = Substitute.For<IUnitOfWork>();
         _userRepository = Substitute.For<IUserRepository>();
         _passwordHasher = Substitute.For<IPasswordHasher>();
-
         _unitOfWork.UserRepository.Returns(_userRepository);
 
         _handler = new SetPasswordCommandHandler(_unitOfWork, _passwordHasher);
@@ -35,10 +34,7 @@ public class SetPasswordCommandHandlerTests
         // Arrange
         var command = new SetPasswordCommand("valid-token", "NewPassword1");
         const string hashedPassword = "hashed-password";
-
         _passwordHasher.Hash(command.Password).Returns(hashedPassword);
-
-
         _userRepository.SetPasswordByTokenAsync(command.Token, hashedPassword, CancellationToken.None).Returns(true);
 
         // Act
@@ -60,8 +56,6 @@ public class SetPasswordCommandHandlerTests
         const string hashedPassword = "hashed-password";
 
         _passwordHasher.Hash(command.Password).Returns(hashedPassword);
-
-
         _userRepository.SetPasswordByTokenAsync(command.Token, hashedPassword, CancellationToken.None)
             .Returns(false);
 
