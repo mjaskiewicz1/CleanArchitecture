@@ -40,7 +40,7 @@ internal class UsersControllerTests
             var client = WebApplicationFactory.CreateClient();
             var request = new LoginUserCommand(login, password);
             var url = UsersPath.ToRelativeUri(Login);
-            
+
             // Act
             var response = await client.PostAsJsonAsync(url, request);
 
