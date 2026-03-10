@@ -8,4 +8,4 @@ namespace Application.Common;
 public interface ICreateRequest<out TEntity> where TEntity : DbEntity
 {
     public TEntity ToEntity();
-};
+}
