@@ -1,14 +1,13 @@
 # Szablon Clean Architecture
 
-Szablon startowy Web API w ASP.NET Core oparty na zasadach Clean Architecture.  
-Repozytorium pokazuje przykładową strukturę projektu oraz podstawowe mechanizmy używane w nowoczesnych aplikacjach .NET.
+Szablon startowy Web API w ASP.NET Core oparty na zasadach Clean Architecture.
 
 ## Architektura
 
-- **Warstwa Domain** – definicje encji i modeli domenowych  
-- **Warstwa Application** – przypadki użycia (CQRS) i logika aplikacyjna  
-- **Warstwa Infrastructure** – dostęp do danych i integracje zewnętrzne  
-- **Warstwa Web.Api** – kontrolery REST API  
+- **Warstwa Domain** 
+- **Warstwa Application** 
+- **Warstwa Infrastructure**
+- **Warstwa Web.Api**
 
 ## Kluczowe technologie
 
@@ -32,9 +31,9 @@ Repozytorium pokazuje przykładową strukturę projektu oraz podstawowe mechaniz
 - Refresh tokeny
 - Autoryzacja oparta na uprawnieniach
 - Reset hasła
-- Hashowanie haseł BCrypt
 
-## Przykładowe funkcjonalności
+
+## Funkcjonalności
 
 - Zarządzanie użytkownikami (CRUD)
 - Logowanie i odświeżanie tokenów
