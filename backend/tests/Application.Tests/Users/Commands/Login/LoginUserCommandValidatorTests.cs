@@ -1,6 +1,8 @@
 using Application.Tests.Validators;
 using Application.Users.Commands.Login;
 
+using FluentValidation.TestHelper;
+
 namespace Application.Tests.Users.Commands.Login;
 
 [MicrosoftDependencyInjectionDataSource]
@@ -16,7 +18,7 @@ public sealed class LoginUserCommandValidatorTests(LoginUserCommandValidators va
         var command = new LoginUserCommand(email, password);
 
         // Act
-        var result = await _validator.ValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command);
 
         // Assert
         await Assert.That(result.IsValid).IsFalse();
@@ -31,7 +33,7 @@ public sealed class LoginUserCommandValidatorTests(LoginUserCommandValidators va
         var command = new LoginUserCommand(email, password);
 
         // Act
-        var result = await _validator.ValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command);
 
         // Assert
         await Assert.That(result.IsValid).IsFalse();
@@ -45,7 +47,7 @@ public sealed class LoginUserCommandValidatorTests(LoginUserCommandValidators va
         var command = new LoginUserCommand(email, password);
 
         // Act
-        var result = await _validator.ValidateAsync(command);
+        var result = await _validator.TestValidateAsync(command);
 
         // Assert
         await Assert.That(result.IsValid).IsTrue();

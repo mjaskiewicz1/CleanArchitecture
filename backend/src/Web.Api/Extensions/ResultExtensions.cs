@@ -13,14 +13,23 @@ internal static class ResultExtensions
 {
     private static IHttpContextAccessor? s_accessor;
 
+    /// <summary>
+    /// Initializes the ResultExtensions with HTTP context accessor for error handling
+    /// </summary>
     public static void Init(IHttpContextAccessor accessor) => s_accessor = accessor;
 
     extension(Result result)
     {
+        /// <summary>
+        /// Converts Result to 200 OK or error response
+        /// </summary>
         public IActionResult ToOkResult()
             => result.IsSuccess
                 ? new OkResult()
                 : result.Error.ToProblemDetails();
+        /// <summary>
+        /// Converts Result to 204 No Content or error response
+        /// </summary>
         public IActionResult NoContentResult()
             => result.IsSuccess
                 ? new NoContentResult()
@@ -29,6 +38,9 @@ internal static class ResultExtensions
 
     extension<T>(Result<T> result)
     {
+        /// <summary>
+        /// Converts Result to 200 OK with data or error response
+        /// </summary>
         public IActionResult ToOkObjectResult()
             => result.IsSuccess
                 ? new OkObjectResult(result.Value)
@@ -37,6 +49,9 @@ internal static class ResultExtensions
 
     extension<T>(Result<T> result) where T : BaseResponse
     {
+        /// <summary>
+        /// Converts Result to 201 Created response or error response
+        /// </summary>
         public IActionResult ToCreatedAtAction(string actionName)
         {
             return result.IsSuccess

@@ -39,7 +39,6 @@ internal class UsersControllerTests
             // Arrange
             var client = WebApplicationFactory.CreateClient();
             var request = new LoginUserCommand(login, password);
-
             var url = UsersPath.ToRelativeUri(Login);
 
             // Act
@@ -63,7 +62,6 @@ internal class UsersControllerTests
             // Arrange
             var client = WebApplicationFactory.CreateClient();
             var request = new LoginUserCommand(login, password);
-
             var url = UsersPath.ToRelativeUri(Login);
 
             // Act
@@ -84,7 +82,6 @@ internal class UsersControllerTests
             // Arrange
             var client = WebApplicationFactory.CreateClient();
             var request = new LoginUserCommand(login, password);
-
             var url = UsersPath.ToRelativeUri(Login);
 
             // Act
@@ -100,7 +97,6 @@ internal class UsersControllerTests
         {
             // Arrange
             var client = await WebApplicationFactory.CreateAuthenticatedClientAsync(login, password);
-
             var url = UsersPath.ToRelativeUri(Revoke);
 
             // Act
@@ -117,7 +113,6 @@ internal class UsersControllerTests
             // Arrange
             var client = WebApplicationFactory.CreateClient();
             var request = new RefreshTokenCommand(refreshToken);
-
             var url = UsersPath.ToRelativeUri(RefreshToken);
 
             // Act
@@ -657,8 +652,6 @@ internal class UsersControllerTests
             // Arrange
 
             var client = await WebApplicationFactory.CreateAuthenticatedClientAsync();
-            var user = await WebApplicationFactory.Seeder.CreateUserWithPermissionsAsync(permissions:
-                [PermissionName.UserDelete]);
 
             var url = UsersPath.ToRelativeUri(userIdToDelete.ToString());
 

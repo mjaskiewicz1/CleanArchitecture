@@ -15,8 +15,10 @@ public class UserSeeder : EntitySeeder<User>
     /// <see cref="UserSeeder"/> must be executed after:
     /// <see cref="PermissionSeeder"/>
     /// </summary>
+#pragma warning disable S2068
     private const string Password =
         "784B97F150C499520BEE93F7193B8FA37BC5917ACFC5F55D1B1516B46B98023F-A65B186D61C9D4C17341A33F44317755";
+#pragma warning restore S2068
 
     public override uint Order => 1;
 

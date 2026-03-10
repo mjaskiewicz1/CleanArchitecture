@@ -38,6 +38,7 @@ public class LoginUserCommandHandlerTests
     [Test]
     public async Task Should_login_user_and_return_tokens()
     {
+        // Arrange
         var command = new LoginUserCommand("test@test.com", "Password123");
 
         var user = new User
@@ -62,8 +63,10 @@ public class LoginUserCommandHandlerTests
 
         _passwordHasher.Hash("refresh-token").Returns("hashed-refresh-token");
 
+        // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
+        // Assert
         await Assert.That(result.IsSuccess).IsTrue();
 
         await Assert.That(result.Value.AccessToken).IsEqualTo("access-token");
@@ -75,6 +78,7 @@ public class LoginUserCommandHandlerTests
     [Test]
     public async Task Should_not_login_user_and_return_error_when_user_does_not_exist()
     {
+        // Arrange
         var command = new LoginUserCommand("test@test.com", "Password123");
 
         _userRepository.GetAsync(filter: Arg.Any<Expression<Func<User, bool>>>(),
@@ -82,8 +86,10 @@ public class LoginUserCommandHandlerTests
             asNoTracking: false,
             cancellationToken: CancellationToken.None).Returns((User)null!);
 
+        // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
+        // Assert
         await Assert.That(result.IsSuccess).IsFalse();
     }
 }
