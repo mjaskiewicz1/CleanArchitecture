@@ -10,17 +10,17 @@
     <PackageVersion Include="Bogus" Version="35.6.5" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
-    <PackageVersion Include="MailKit" Version="4.15.0" />
-    <PackageVersion Include="MediatR" Version="14.0.0" />
+    <PackageVersion Include="MailKit" Version="4.15.1" />
+    <PackageVersion Include="MediatR" Version="14.1.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.3" />
-    <PackageVersion Include="Grafana.OpenTelemetry" Version="1.5.2" />
+    <PackageVersion Include="Grafana.OpenTelemetry" Version="1.5.3" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="NetArchTest.Rules" Version="1.3.2" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.15.1" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3" />
@@ -28,18 +28,18 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.3" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.15.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.41" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.13.3" />
     <PackageVersion Include="Scrutor" Version="7.0.0" />
-    <PackageVersion Include="SharpAbp.Abp.OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="4.6.6" />
+    <PackageVersion Include="SharpAbp.Abp.OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="4.6.8" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Azure" Version="1.13.1" />
     <!-- Analyzers -->
     <PackageVersion Include="Roslynator.Analyzers" Version="4.15.0" />
     <PackageVersion Include="Roslynator.CodeAnalysis.Analyzers" Version="4.15.0" />
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.15.0" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.19.0.132793" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.20.0.135146" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.10.0" />
-    <PackageVersion Include="TUnit" Version="1.15.0" />
+    <PackageVersion Include="TUnit" Version="1.19.22" />
     <PackageVersion Include="TUnit.Assertions" Version="1.15.0" />
     <PackageVersion Include="TUnit.Core" Version="1.15.0" />
   </ItemGroup>
