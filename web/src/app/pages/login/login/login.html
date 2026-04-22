@@ -17,21 +17,21 @@
           </div>
         }
         <div class="flex flex-col gap-1">
-          <label for="login" class="text-[11px] uppercase tracking-widest font-bold text-brand-muted">
+          <label for="email" class="text-[11px] uppercase tracking-widest font-bold text-brand-muted">
             Email
           </label>
           <input
-            id="login"
+            id="email"
             type="email"
-            placeholder="Wpisz login"
-            [formField]="loginForm.login"
+            placeholder="Wpisz email"
+            [formField]="loginForm.email"
             class="w-full h-12 bg-brand-input border px-4 text-sm text-white
                    placeholder-brand-muted/40 outline-none transition-colors caret-white"
-            [class.border-brand-border]="!loginForm.login().touched() || loginForm.login().valid()"
-            [class.border-error]="loginForm.login().touched() && loginForm.login().invalid()"
+            [class.border-brand-border]="!loginForm.email().touched() || loginForm.email().valid()"
+            [class.border-error]="loginForm.email().touched() && loginForm.email().invalid()"
           />
-          @if (loginForm.login().touched() && loginForm.login().invalid()) {
-            @for (err of loginForm.login().errors(); track err.kind) {
+          @if (loginForm.email().touched() && loginForm.email().invalid()) {
+            @for (err of loginForm.email().errors(); track err.kind) {
               @if (err.kind === 'required') { <span class="text-[11px] text-error">Email jest wymagany</span> }
               @if (err.kind === 'email') { <span class="text-[11px] text-error">Podaj poprawny adres email</span> }
             }

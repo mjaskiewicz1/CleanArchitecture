@@ -19,11 +19,11 @@ export class Login {
   private readonly login$ = new Subject<LoginRequest>();
 
   readonly loginError = signal<string | null>(null);
-  readonly model = signal<LoginRequest>({ login: '', password: '' });
+  readonly model = signal<LoginRequest>({ email: '', password: '' });
 
   readonly loginForm = form(this.model, (p) => {
-    required(p.login);
-    email(p.login);
+    required(p.email);
+    email(p.email);
     required(p.password);
   }, {
     submission: { action: async () => { this.onLogin(); } }
