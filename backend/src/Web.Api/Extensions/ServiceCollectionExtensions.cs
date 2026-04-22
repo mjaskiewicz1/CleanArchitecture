@@ -17,8 +17,17 @@ public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public void AddPresentation()
+        public void AddPresentation(bool isDevelopment)
         {
+            if (isDevelopment)
+            {
+                services.AddCors(options => options.AddDefaultPolicy(policy =>
+                    policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()));
+
+            }
             services.AddOpenApi(static options => options.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
 
             services.AddControllers(static mvcOptions =>

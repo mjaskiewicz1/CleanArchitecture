@@ -18,6 +18,8 @@ public static class WebApplicationExtensions
 
             app.UseExceptionHandler();
             app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
