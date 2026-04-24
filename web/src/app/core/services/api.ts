@@ -6,7 +6,7 @@ import { HttpResourceRef } from '@angular/common/http';
 @Injectable({ providedIn: 'root' })
 export class Api {
   protected readonly http = inject(HttpClient);
-  protected readonly baseUrl = 'http://localhost:5000/api';
+  protected readonly baseUrl = 'https://localhost:5001/api';
 
   protected get<T>(path: string): HttpResourceRef<T | undefined> {
     return httpResource<T>(() => `${this.baseUrl}/${path}`);
