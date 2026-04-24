@@ -11,8 +11,7 @@ import { ErrorTranslatable } from '../../core/interfaces/error-translatable.inte
 @Component({
   selector: 'app-login',
   imports: [FormRoot, FormField],
-  templateUrl: './login.html',
-  styleUrl: './login.css',
+  templateUrl: './login.html'
 })
 export class Login implements ErrorTranslatable {
   private readonly userService = inject(UserService);
@@ -44,10 +43,10 @@ export class Login implements ErrorTranslatable {
   getFieldError(field: 'email' | 'password'): string | null {
     const fieldControl = this.loginForm[field]();
     if (!fieldControl.touched() || fieldControl.valid()) return null;
-    
+
     const errors = fieldControl.errors();
     if (errors.length === 0) return null;
-    
+
     return this.translateError(errors[0].message || errors[0].kind);
   }
 

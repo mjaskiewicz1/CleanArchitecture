@@ -1,81 +1,112 @@
-<div class="min-h-screen w-full flex items-center justify-center bg-brand-dark p-6 font-sans">
+<div class="min-h-screen w-full flex items-center justify-center bg-brand-dark p-6"
+     style="font-family: 'IBM Plex Sans', sans-serif;">
 
   <div class="w-full max-w-[420px]">
 
-    <div class="bg-brand-card border border-brand-border shadow-2xl p-8 md:p-12">
+    <div class="bg-brand-card border border-brand-border p-10">
 
-      <div class="mb-12">
-        <h1 class="text-2xl font-bold text-white tracking-tight">Logowanie</h1>
-        <div class="h-px w-12 bg-brand-accent mt-4"></div>
+      <!-- Logo mark + product name -->
+      <div class="flex items-center gap-2.5 mb-10">
+        <div class="w-7 h-7 bg-accent flex items-center justify-center shrink-0">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="white">
+            <path d="M7 0L14 7L7 14L0 7Z"/>
+          </svg>
+        </div>
+        <span class="font-mono text-hint font-medium text-brand-muted tracking-widest uppercase">
+          Axion · Suite
+        </span>
       </div>
 
-      <form [formRoot]="loginForm" class="space-y-8">
+      <!-- Page heading -->
+      <h1 class="text-xl font-semibold text-text-main tracking-tightest mb-8">
+        Logowanie do systemu
+      </h1>
 
+      <form [formRoot]="loginForm" class="space-y-5">
+
+        <!-- Global auth error -->
         @if (loginError()) {
-          <div class="border border-error/30 bg-error/10 px-4 py-3 text-[11px] text-error uppercase tracking-widest">
+          <div class="border-l-2 border-error bg-error/8 px-3.5 py-2.5 text-body text-error tracking-wide">
             {{ loginError() }}
           </div>
         }
-        <div class="flex flex-col gap-1">
-          <label for="email" class="text-[11px] uppercase tracking-widest font-bold text-brand-muted">
-            Email
+
+        <!-- Email field -->
+        <div class="flex flex-col gap-1.5">
+          <label for="email"
+                 class="text-label font-medium text-brand-muted uppercase tracking-widest">
+            Adres e-mail
           </label>
           <input
             id="email"
             type="email"
-            placeholder="Wpisz email"
+            placeholder="jan.kowalski@firma.pl"
             [formField]="loginForm.email"
-            class="w-full h-12 bg-brand-input border px-4 text-sm text-white
-                   placeholder-brand-muted/40 outline-none transition-colors caret-white"
+            class="h-10 bg-brand-input border px-3 text-input text-text-main
+                   placeholder:text-brand-muted/40 outline-none transition-colors
+                   duration-150 caret-white focus:border-accent"
             [class.border-brand-border]="!loginForm.email().touched() || loginForm.email().valid()"
             [class.border-error]="loginForm.email().touched() && loginForm.email().invalid()"
           />
           @if (getFieldError('email')) {
-            <span class="text-[11px] text-error">{{ getFieldError('email') }}</span>
+            <span class="text-hint text-error leading-none">
+              {{ getFieldError('email') }}
+            </span>
           }
-
         </div>
 
-        <div class="flex flex-col gap-1">
-          <div class="flex justify-between items-end">
-            <label for="password" class="text-[11px] uppercase tracking-widest font-bold text-brand-muted">
+        <!-- Password field -->
+        <div class="flex flex-col gap-1.5">
+          <div class="flex justify-between items-baseline">
+            <label for="password"
+                   class="text-label font-medium text-brand-muted uppercase tracking-widest">
               Hasło
             </label>
-            <a href="#" class="text-[10px] uppercase text-brand-muted hover:text-white transition-colors tracking-tightest">
-              Zapomniałeś?
-            </a>
           </div>
           <input
             id="password"
             type="password"
             placeholder="••••••••"
             [formField]="loginForm.password"
-            class="w-full h-12 bg-brand-input border px-4 text-sm text-white
-                   placeholder-brand-muted/40 outline-none transition-colors caret-white"
+            class="h-10 bg-brand-input border px-3 text-input text-text-main
+                   placeholder:text-brand-muted/40 outline-none transition-colors
+                   duration-150 caret-white focus:border-accent"
             [class.border-brand-border]="!loginForm.password().touched() || loginForm.password().valid()"
             [class.border-error]="loginForm.password().touched() && loginForm.password().invalid()"
           />
           @if (getFieldError('password')) {
-            <span class="text-[11px] text-error">{{ getFieldError('password') }}</span>
+            <span class="text-hint text-error leading-none">
+              {{ getFieldError('password') }}
+            </span>
           }
-
         </div>
 
-        <div class="pt-4">
+        <!-- Submit button -->
+        <div class="pt-3">
           <button
             type="submit"
-            class="w-full h-12 bg-brand-accent hover:bg-zinc-200 text-brand-dark
-                   text-xs font-black uppercase tracking-widest transition-colors
-                   flex items-center justify-center"
+            class="w-full h-10  bg-accent hover:bg-accent-hover text-text-inv
+                   text-body font-semibold uppercase tracking-widest
+                   transition-colors flex items-center justify-center"
           >
             Zaloguj się
           </button>
         </div>
 
       </form>
+
+      <!-- App version + environment indicator -->
+      <div class="flex items-center gap-2 mt-8 pt-6 border-t border-brand-border">
+        <div class="w-1.5 h-1.5 rounded-full bg-accent"></div>
+        <span class="font-mono text-hint text-text-dim">
+          v2.4.1 · Środowisko produkcyjne
+        </span>
+      </div>
+
     </div>
 
-    <p class="text-center mt-8 text-[10px] text-zinc-700 uppercase tracking-[0.3em]">
+    <!-- Footer -->
+    <p class="text-center mt-6 font-mono text-label text-text-dim/40 uppercase tracking-widest">
       System autoryzacji &copy; 2026
     </p>
 
