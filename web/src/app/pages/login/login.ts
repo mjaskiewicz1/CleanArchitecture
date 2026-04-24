@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { form, required, email, FormRoot, FormField } from '@angular/forms/signals';
 import { Subject, switchMap, catchError, of, tap } from 'rxjs';
-import { LoginRequest } from '../../../core/models/users/login-request';
-import { ApiError } from '../../../core/models/users/api-error';
-import { UserService } from '../../../core/services/user';
+import { LoginRequest } from '../../core/models/users/login-request';
+import { ApiError } from '../../core/models/users/api-error';
+import { UserService } from '../../core/services/user';
 
 @Component({
   selector: 'app-login',
