@@ -19,6 +19,9 @@ public static class ServiceCollectionExtensions
     {
         public void AddPresentation()
         {
+            services.AddCors(options => options.AddPolicy("AllowAngular", policy => policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()));
             services.AddOpenApi(static options => options.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
 
             services.AddControllers(static mvcOptions =>
