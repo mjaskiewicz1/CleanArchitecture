@@ -101,7 +101,7 @@ services:
       AzureStorage__ConnectionString: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite-storage:10000/devstoreaccount1;QueueEndpoint=http://azurite-storage:10001/devstoreaccount1;TableEndpoint=http://azurite-storage:10002/devstoreaccount1;
 
     volumes:
-      - ~/.aspnet/https:/https:ro 
+      - ${USERPROFILE}/.aspnet/https:/https:ro
 
     depends_on:
       sql-database:
