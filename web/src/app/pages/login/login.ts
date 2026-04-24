@@ -50,7 +50,7 @@ export class Login implements ErrorTranslatable {
     return this.translateError(errors[0].message || errors[0].kind);
   }
 
-  readonly loginResult = toSignal(
+  private readonly  loginResult = toSignal(
     this.login$.pipe(
       switchMap((req) =>
         this.userService.login(req).pipe(
