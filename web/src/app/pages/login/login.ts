@@ -6,43 +6,40 @@ import { Subject, switchMap, catchError, of, tap } from 'rxjs';
 import { LoginRequest } from '../../core/models/users/login-request';
 import { ApiError } from '../../core/models/users/api-error';
 import { UserService } from '../../core/services/user';
-import { ErrorTranslatable } from '../../core/interfaces/error-translatable.interface';
+import { ApiErrorHandler } from '../../core/services/api-error-handler';
+
 
 @Component({
   selector: 'app-login',
   imports: [FormRoot, FormField],
   templateUrl: './login.html',
 })
-export class Login implements ErrorTranslatable {
-  private readonly userService = inject(UserService);
-  private readonly router = inject(Router);
-  private readonly login$ = new Subject<LoginRequest>();
+export class Login {
+  private readonly userService     = inject(UserService);
+  private readonly router          = inject(Router);
+  private readonly apiErrorHandler = inject(ApiErrorHandler);
+  private readonly login$          = new Subject<LoginRequest>();
 
   readonly loginError = signal<string | null>(null);
-  readonly model = signal<LoginRequest>({ email: '', password: '' });
+  readonly model      = signal<LoginRequest>({ email: '', password: '' });
 
-  private readonly fieldServerErrors: Record<keyof LoginRequest, WritableSignal<string | null>> = {
-    email: signal(null),
+  readonly fieldServerErrors: Record<keyof LoginRequest, WritableSignal<string | null>> = {
+    email   : signal(null),
     password: signal(null),
   };
 
   private readonly errorTranslations: Record<string, string> = {
-    'Invalid email or password.': 'Nieprawidłowy email lub hasło',
-    'One or more validation errors occurred': 'Wystąpiły błędy walidacji',
-    "'Email' is not a valid email address.": 'Nieprawidłowy adres email',
-    "'Email' must not be empty.": 'Nieprawidłowy adres email',
-    "'Password' must not be empty.": 'Hasło jest wymagane',
+    'Invalid email or password.'            : 'Nieprawidłowy email lub hasło',
+    "'Email' is not a valid email address." : 'Nieprawidłowy adres email',
+    "'Email' must not be empty."            : 'Nieprawidłowy adres email',
+    "'Password' must not be empty."         : 'Hasło jest wymagane',
   };
-
-  translateError(error: string): string {
-    return this.errorTranslations[error] ?? error;
-  }
 
   readonly loginForm = form(
     this.model,
     (p) => {
-      required(p.email, { message: "'Email' must not be empty." });
-      email(p.email, { message: "'Email' is not a valid email address." });
+      required(p.email,    { message: "'Email' must not be empty." });
+      email(p.email,       { message: "'Email' is not a valid email address." });
       required(p.password, { message: "'Password' must not be empty." });
     },
     {
@@ -51,17 +48,12 @@ export class Login implements ErrorTranslatable {
   );
 
   getFieldError(field: keyof LoginRequest): string | null {
-    // Server error takes priority over client-side validation error
-    const serverError = this.fieldServerErrors[field]();
-    if (serverError) return serverError;
-
-    const ctrl = this.loginForm[field]();
-    if (!ctrl.touched() || ctrl.valid()) return null;
-
-    const errors = ctrl.errors();
-    if (errors.length === 0) return null;
-
-    return this.translateError(errors[0].message ?? errors[0].kind);
+    return this.apiErrorHandler.resolveFieldError(
+      field as string,
+      this.fieldServerErrors,
+      this.loginForm[field],
+      this.errorTranslations
+    );
   }
 
   private readonly loginResult = toSignal(
@@ -70,10 +62,16 @@ export class Login implements ErrorTranslatable {
         this.userService.login(req).pipe(
           tap((response) => {
             localStorage.setItem('jwt', response.token);
-          void  this.router.navigate(['/dashboard']);
+            void this.router.navigate(['/dashboard']);
           }),
           catchError((err: ApiError) => {
-            this.handleApiError(err);
+            this.apiErrorHandler.handle(
+              err,
+              this.fieldServerErrors,
+              this.loginError,
+              this.errorTranslations,
+              this.model()
+            );
             return of(null);
           }),
         ),
@@ -84,23 +82,7 @@ export class Login implements ErrorTranslatable {
 
   onLogin(): void {
     this.loginError.set(null);
-    Object.values(this.fieldServerErrors).forEach((s) => s.set(null));
+    Object.values(this.fieldServerErrors).forEach(s => s.set(null));
     this.login$.next(this.model());
-  }
-
-  private handleApiError(err: ApiError): void {
-    if (err.errors && Object.keys(err.errors).length > 0) {
-      for (const [key, messages] of Object.entries(err.errors)) {
-        const field = key.toLowerCase() as keyof LoginRequest;
-
-        if (field in this.model()) {
-          this.fieldServerErrors[field].set(this.translateError(messages[0]));
-          continue;
-        }
-        this.loginError.set(this.translateError(messages[0]));
-      }
-      return;
-    }
-    this.loginError.set(this.translateError(err.detail || 'Błąd logowania'));
   }
 }
