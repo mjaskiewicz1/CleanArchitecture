@@ -7,6 +7,7 @@ import { LoginRequest } from '../../core/models/users/login-request';
 import { ApiError } from '../../core/models/users/api-error';
 import { UserService } from '../../core/services/user';
 import { ApiErrorHandler } from '../../core/services/api-error-handler';
+import { AuthSessionService } from '../../core/services/auth-session';
 
 const EMAIL_MESSAGES = {
   required: "'Email' must not be empty.",
@@ -26,6 +27,7 @@ export class Login {
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
   private readonly apiErrorHandler = inject(ApiErrorHandler);
+  private readonly authSession = inject(AuthSessionService);
   private readonly login$ = new Subject<LoginRequest>();
 
   readonly loginError = signal<string | null>(null);
@@ -69,7 +71,7 @@ export class Login {
       switchMap((req) =>
         this.userService.login(req).pipe(
           tap((response) => {
-            localStorage.setItem('jwt', response.token);
+            this.authSession.setSession(response);
             void this.router.navigate(['/dashboard']);
           }),
           catchError((err: ApiError) => {
