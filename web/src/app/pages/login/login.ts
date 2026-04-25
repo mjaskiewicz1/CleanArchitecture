@@ -48,7 +48,7 @@ export class Login {
     (p) => {
       required(p.email, { message: EMAIL_MESSAGES.required });
       email(p.email, { message: EMAIL_MESSAGES.format });
-      // required(p.password, { message: PASSWORD_MESSAGES.required });
+      required(p.password, { message: PASSWORD_MESSAGES.required });
     },
     {
       submission: { action: async () => this.onLogin() },
