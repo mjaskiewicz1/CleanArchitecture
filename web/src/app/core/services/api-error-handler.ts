@@ -11,12 +11,13 @@ export class ApiErrorHandler {
   resolveFieldError(
     field: string,
     fieldSignals: Record<string, WritableSignal<string | null>>,
-    formField: () => { touched: () => boolean; valid: () => boolean; errors: () => { message?: string; kind: string }[] },
+    formField: (() => { touched: () => boolean; valid: () => boolean; errors: () => { message?: string; kind: string }[] }) | undefined,
     translations: Record<string, string>
   ): string | null {
     const serverError = fieldSignals[field]?.();
     if (serverError) return serverError;
 
+    if (!formField) return null;
     const ctrl = formField();
     if (!ctrl.touched() || ctrl.valid()) return null;
 

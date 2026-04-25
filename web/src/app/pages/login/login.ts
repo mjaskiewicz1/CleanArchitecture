@@ -8,6 +8,14 @@ import { ApiError } from '../../core/models/users/api-error';
 import { UserService } from '../../core/services/user';
 import { ApiErrorHandler } from '../../core/services/api-error-handler';
 
+const EMAIL_MESSAGES = {
+  required: "'Email' must not be empty.",
+  format: "'Email' is not a valid email address.",
+} as const;
+
+const PASSWORD_MESSAGES = {
+  required: "'Password' must not be empty.",
+} as const;
 
 @Component({
   selector: 'app-login',
@@ -15,32 +23,32 @@ import { ApiErrorHandler } from '../../core/services/api-error-handler';
   templateUrl: './login.html',
 })
 export class Login {
-  private readonly userService     = inject(UserService);
-  private readonly router          = inject(Router);
+  private readonly userService = inject(UserService);
+  private readonly router = inject(Router);
   private readonly apiErrorHandler = inject(ApiErrorHandler);
-  private readonly login$          = new Subject<LoginRequest>();
+  private readonly login$ = new Subject<LoginRequest>();
 
   readonly loginError = signal<string | null>(null);
-  readonly model      = signal<LoginRequest>({ email: '', password: '' });
+  readonly model = signal<LoginRequest>({ email: '', password: '' });
 
   readonly fieldServerErrors: Record<keyof LoginRequest, WritableSignal<string | null>> = {
-    email   : signal(null),
+    email: signal(null),
     password: signal(null),
   };
 
   private readonly errorTranslations: Record<string, string> = {
-    'Invalid email or password.'            : 'Nieprawidłowy email lub hasło',
-    "'Email' is not a valid email address." : 'Nieprawidłowy adres email',
-    "'Email' must not be empty."            : 'Nieprawidłowy adres email',
-    "'Password' must not be empty."         : 'Hasło jest wymagane',
+    'Invalid email or password.': 'Nieprawidłowy email lub hasło',
+    [EMAIL_MESSAGES.required]: 'Nieprawidłowy adres email',
+    [EMAIL_MESSAGES.format]: 'Nieprawidłowy adres email',
+    [PASSWORD_MESSAGES.required]: 'Hasło jest wymagane',
   };
 
   readonly loginForm = form(
     this.model,
     (p) => {
-      required(p.email,    { message: "'Email' must not be empty." });
-      email(p.email,       { message: "'Email' is not a valid email address." });
-      required(p.password, { message: "'Password' must not be empty." });
+      required(p.email, { message: EMAIL_MESSAGES.required });
+      email(p.email, { message: EMAIL_MESSAGES.format });
+      // required(p.password, { message: PASSWORD_MESSAGES.required });
     },
     {
       submission: { action: async () => this.onLogin() },
@@ -52,7 +60,7 @@ export class Login {
       field as string,
       this.fieldServerErrors,
       this.loginForm[field],
-      this.errorTranslations
+      this.errorTranslations,
     );
   }
 
@@ -70,7 +78,7 @@ export class Login {
               this.fieldServerErrors,
               this.loginError,
               this.errorTranslations,
-              this.model()
+              this.model(),
             );
             return of(null);
           }),
@@ -82,7 +90,7 @@ export class Login {
 
   onLogin(): void {
     this.loginError.set(null);
-    Object.values(this.fieldServerErrors).forEach(s => s.set(null));
+    Object.values(this.fieldServerErrors).forEach((s) => s.set(null));
     this.login$.next(this.model());
   }
 }
