@@ -1,6 +1,6 @@
 // core/services/api-error-handler.service.ts
 import { Injectable, WritableSignal } from '@angular/core';
-import { ApiError } from '../models/users/api-error';
+import { ApiError } from '../../models/users/api-error';
 
 @Injectable({ providedIn: 'root' })
 export class ApiErrorHandler {

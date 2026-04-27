@@ -2,8 +2,8 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, Observable, switchMap, throwError, shareReplay, finalize } from 'rxjs';
-import { AuthSessionService } from '../services/auth-session';
-import { UserService } from '../services/user';
+import { AuthSessionService } from '../services/auth/auth-session';
+import { UserService } from '../services/user/user';
 import { LoginResponse } from '../models/users/login-response';
 
 let refreshRequest$: Observable<LoginResponse> | null = null;

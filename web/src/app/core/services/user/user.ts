@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Api } from './api';
-import { LoginRequest } from '../models/users/login-request';
-import { LoginResponse } from '../models/users/login-response';
-import { RefreshTokenRequest } from '../models/users/refresh-token-request';
-import { UserDetailsResponse } from '../models/users/user-details-response';
+import { Api } from '../api/api';
+import { LoginRequest } from '../../models/users/login-request';
+import { LoginResponse } from '../../models/users/login-response';
+import { RefreshTokenRequest } from '../../models/users/refresh-token-request';
+import { UserDetailsResponse } from '../../models/users/user-details-response';
 
 @Injectable({ providedIn: 'root' })
 export class UserService extends Api {

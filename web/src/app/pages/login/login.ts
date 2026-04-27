@@ -5,9 +5,9 @@ import { form, required, email, FormRoot, FormField } from '@angular/forms/signa
 import { Subject, switchMap, catchError, of, tap } from 'rxjs';
 import { LoginRequest } from '../../core/models/users/login-request';
 import { ApiError } from '../../core/models/users/api-error';
-import { UserService } from '../../core/services/user';
-import { ApiErrorHandler } from '../../core/services/api-error-handler';
-import { AuthSessionService } from '../../core/services/auth-session';
+import { UserService } from '../../core/services/user/user';
+import { ApiErrorHandler } from '../../core/services/user/api-error-handler';
+import { AuthSessionService } from '../../core/services/auth/auth-session';
 
 const EMAIL_MESSAGES = {
   required: "'Email' must not be empty.",

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { finalize } from 'rxjs';
 import { ApiError } from '../../core/models/users/api-error';
 import { UserDetailsResponse } from '../../core/models/users/user-details-response';
-import { UserService } from '../../core/services/user';
+import { UserService } from '../../core/services/user/user';
 
 @Component({
   selector: 'app-dashboard',

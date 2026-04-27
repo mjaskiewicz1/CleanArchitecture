@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { LoginResponse } from '../models/users/login-response';
+import { LoginResponse } from '../../models/users/login-response';
 
 const ACCESS_TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
