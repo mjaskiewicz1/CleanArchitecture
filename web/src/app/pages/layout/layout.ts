@@ -1,12 +1,13 @@
 import { Component, signal, inject } from '@angular/core';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { NgTemplateOutlet } from '@angular/common';
+import { NgIcon } from '@ng-icons/core';
 import { AuthSessionService } from '../../core/services/auth/auth-session';
 import { Topbar } from './topbar/topbar';
 
 @Component({
   selector: 'app-layout',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgTemplateOutlet, Topbar],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgTemplateOutlet, Topbar, NgIcon],
   templateUrl: './layout.html',
 })
 export class Layout {
