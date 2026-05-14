@@ -1,0 +1,43 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-lg font-medium text-text-main">Użytkownicy</h1>
+  <a routerLink="/users/create"
+     class="px-4 h-9 bg-accent text-white text-body flex items-center hover:opacity-90 transition-opacity">
+    + Nowy użytkownik
+  </a>
+</div>
+
+<table class="w-full text-body text-text-muted border border-border">
+  <thead class="bg-surface-1">
+    <tr>
+      <th class="px-4 h-9 text-left font-medium text-text-main">Imię i nazwisko</th>
+      <th class="px-4 h-9 text-left font-medium text-text-main">Email</th>
+      <th class="px-4 h-9 text-left font-medium text-text-main">Uprawnienia</th>
+      <th class="px-4 h-9"></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (user of users; track user.id) {
+      <tr class="border-t border-border hover:bg-surface-1 transition-colors">
+        <td class="px-4 py-2 whitespace-nowrap">{{ user.firstName }} {{ user.lastName }}</td>
+        <td class="px-4 py-2 whitespace-nowrap">{{ user.email }}</td>
+        <td class="px-4 py-2">
+          <div class="flex flex-wrap gap-1">
+            @for (p of user.permissions; track p.permission) {
+              <span class="px-2 py-0.5 text-hint bg-surface-2 border border-border text-text-muted">
+                {{ p.permission }}
+              </span>
+            }
+            @if (user.permissions.length === 0) {
+              <span class="text-text-muted opacity-40">brak</span>
+            }
+          </div>
+        </td>
+        <td class="px-4 py-2 whitespace-nowrap text-right">
+          <a [routerLink]="['/users', user.id, 'edit']" class="text-accent hover:underline">Edytuj</a>
+          <span class="mx-2 text-border">·</span>
+          <a [routerLink]="['/users', user.id, 'delete']" class="text-red-500 hover:underline">Usuń</a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
