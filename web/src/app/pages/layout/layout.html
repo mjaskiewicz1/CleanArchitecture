@@ -1,0 +1,48 @@
+<div class="flex h-screen bg-bg" style="font-family: 'IBM Plex Sans', sans-serif;">
+
+  <!-- Sidebar desktop -->
+  <aside class="hidden md:flex flex-col w-56 bg-surface-1 border-r border-border shrink-0">
+    <ng-container *ngTemplateOutlet="sidebar" />
+  </aside>
+
+  <!-- Mobile drawer -->
+  @if (menuOpen()) {
+    <div class="fixed inset-0 z-30 flex md:hidden">
+      <aside class="flex flex-col w-56 bg-surface-1 border-r border-border">
+        <ng-container *ngTemplateOutlet="sidebar" />
+      </aside>
+      <div class="flex-1 bg-black/50" (click)="toggleMenu()"></div>
+    </div>
+  }
+
+  <div class="flex flex-col flex-1 overflow-hidden min-w-0">
+    <app-topbar (menuToggle)="toggleMenu()" (logout)="logout()" />
+
+    <main class="flex-1 overflow-auto p-6">
+      <router-outlet />
+    </main>
+  </div>
+
+</div>
+
+<ng-template #sidebar>
+  <div class="flex items-center gap-2.5 px-4 h-14 border-b border-border shrink-0">
+    <div class="w-6 h-6 bg-accent flex items-center justify-center shrink-0">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="white"><path d="M7 0L14 7L7 14L0 7Z"/></svg>
+    </div>
+    <span class="font-mono text-hint font-medium text-text-muted tracking-widest uppercase">Axion · Suite</span>
+  </div>
+
+  <nav class="flex-1 py-2">
+    <a routerLink="/users" routerLinkActive="bg-surface-2 text-text-main" ariaCurrentWhenActive="page"
+       class="flex items-center gap-3 px-4 h-9 text-body text-text-muted hover:bg-surface-2 hover:text-text-main transition-colors">
+      <ng-icon name="heroUsers" class="w-4 h-4 shrink-0" />
+      Użytkownicy
+    </a>
+    <a routerLink="/settings" routerLinkActive="bg-surface-2 text-text-main" ariaCurrentWhenActive="page"
+       class="flex items-center gap-3 px-4 h-9 text-body text-text-muted hover:bg-surface-2 hover:text-text-main transition-colors">
+      <ng-icon name="heroCog6Tooth" class="w-4 h-4 shrink-0" />
+      Ustawienia
+    </a>
+  </nav>
+</ng-template>
