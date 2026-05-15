@@ -72,7 +72,7 @@ export class Login {
         this.userService.login(req).pipe(
           tap((response) => {
             this.authSession.setSession(response);
-            void this.router.navigate(['/dashboard']);
+            void this.router.navigate(['/users']);
           }),
           catchError((err: ApiError) => {
             this.apiErrorHandler.handle(

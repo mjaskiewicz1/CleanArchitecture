@@ -19,4 +19,8 @@ export class Api {
   protected put<T>(path: string, body: unknown) {
     return this.http.put<T>(`${this.baseUrl}/${path}`, body);
   }
+
+  protected delete(path: string) {
+    return this.http.delete(`${this.baseUrl}/${path}`, { observe: 'response' });
+  }
 }

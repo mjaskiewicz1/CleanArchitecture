@@ -18,4 +18,8 @@ export class UserService extends Api {
   getMe() {
     return this.http.get<UserDetailsResponse>(`${this.baseUrl}/user/me`);
   }
+
+  revokeToken() {
+    return this.delete('user/revoke');
+  }
 }
