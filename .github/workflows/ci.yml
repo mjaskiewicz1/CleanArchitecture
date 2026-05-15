@@ -23,11 +23,38 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # Detect which parts of the project changed
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.changes.outputs.backend }}
+      frontend: ${{ steps.changes.outputs.frontend }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Detect file changes
+        id: changes
+        run: |
+          if git diff --name-only origin/master...HEAD | grep -q '^backend/'; then
+            echo "backend=true" >> $GITHUB_OUTPUT
+          else
+            echo "backend=false" >> $GITHUB_OUTPUT
+          fi
+          if git diff --name-only origin/master...HEAD | grep -q '^web/'; then
+            echo "frontend=true" >> $GITHUB_OUTPUT
+          else
+            echo "frontend=false" >> $GITHUB_OUTPUT
+          fi
+
   # Runs only after conventional-commits passes (or is skipped on push)
   # GitHub treats skipped jobs as success for the purpose of needs resolution
+  # Runs only if backend files changed
   build-and-test:
-    needs: conventional-commits
-    if: always() && (needs.conventional-commits.result == 'success' || needs.conventional-commits.result == 'skipped')
+    needs: [conventional-commits, detect-changes]
+    if: always() && (needs.conventional-commits.result == 'success' || needs.conventional-commits.result == 'skipped') && needs.detect-changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
 
     # ------------------------------------------------------------
@@ -108,10 +135,23 @@ jobs:
           name: coverage
           path: backend/TestResults/*.coverage
 
+  # TODO: Frontend tests - to be implemented
+  # build-and-test-frontend:
+  #   needs: [conventional-commits, detect-changes]
+  #   if: always() && (needs.conventional-commits.result == 'success' || needs.conventional-commits.result == 'skipped') && needs.detect-changes.outputs.frontend == 'true'
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: web
+  #   steps:
+  #     - name: Checkout source code
+  #       uses: actions/checkout@v6
+  #     # Frontend test steps to be added
+
   publish-results:
     name: Publish Test Results
     needs: build-and-test
-    if: always()
+    if: always() && needs.build-and-test.result != 'skipped'
     runs-on: ubuntu-latest
     permissions:
       contents: read
