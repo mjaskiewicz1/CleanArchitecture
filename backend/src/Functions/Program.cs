@@ -22,7 +22,8 @@ services.AddDbContext<ApplicationDbContext>(options =>
     var sqlConnection = Environment.GetEnvironmentVariable(sqlConnectionStringName);
     if (string.IsNullOrWhiteSpace(sqlConnection))
 #pragma warning disable CA2208
-        throw new ArgumentNullException(nameof(sqlConnection), $"Connection string '{sqlConnectionStringName}' is not configured properly.");
+        throw new ArgumentNullException(nameof(sqlConnection),
+            $"Connection string '{sqlConnectionStringName}' is not configured properly.");
 #pragma warning restore CA2208
 
     options.UseSqlServer(sqlConnection);
