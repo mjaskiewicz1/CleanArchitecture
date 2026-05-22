@@ -14,7 +14,11 @@
     <PackageVersion Include="MediatR" Version="14.1.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.8" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Core" Version="2.52.0" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Abstractions" Version="1.3.0" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.3.0" />
     <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.3.1" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Sdk.Generators" Version="1.3.6" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.8" />
     <PackageVersion Include="Grafana.OpenTelemetry" Version="1.7.0" />

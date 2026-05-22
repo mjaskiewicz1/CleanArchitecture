@@ -21,9 +21,9 @@ public class TokenCleanup(ApplicationDbContext dbContext, ILogger<TokenCleanup> 
 
         try
         {
-            if (logger.IsEnabled(LogLevel.Debug)) 
+            if (logger.IsEnabled(LogLevel.Debug))
                 logger.LogDebug("Starting expired refresh token cleanup...");
-            
+
             var deleted = await dbContext.RefreshTokens
                 .Where(t => t.ExpiresAtUtc < DateTime.UtcNow)
                 .ExecuteDeleteAsync();
